@@ -18,6 +18,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* OkHiVaaSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* OkHiVaaSTests.m */; };
+		6DF5410B2421378F00543302 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DF5410A2421378F00543302 /* GoogleService-Info.plist */; };
 		7ABD662395C884138B84AE67 /* libPods-OkHiVaaS-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 398DE790131B88837806F8A0 /* libPods-OkHiVaaS-tvOS.a */; };
 		FCF07960EB32D7F50BBBD2B1 /* libPods-OkHiVaaS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8284959C9DB36576861C721B /* libPods-OkHiVaaS.a */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		398DE790131B88837806F8A0 /* libPods-OkHiVaaS-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OkHiVaaS-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		39D1B22CEB30099B22474CA2 /* Pods-OkHiVaaS-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OkHiVaaS-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-OkHiVaaS-tvOSTests/Pods-OkHiVaaS-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		5B89E8804FE6965106E39BD5 /* libPods-OkHiVaaS-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OkHiVaaS-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DF5410A2421378F00543302 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8284959C9DB36576861C721B /* libPods-OkHiVaaS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OkHiVaaS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A26CCDCBEADD09D7083F831B /* Pods-OkHiVaaSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OkHiVaaSTests.debug.xcconfig"; path = "Target Support Files/Pods-OkHiVaaSTests/Pods-OkHiVaaSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BACA0540E7B32E08064DBD3D /* Pods-OkHiVaaS-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OkHiVaaS-tvOS.release.xcconfig"; path = "Target Support Files/Pods-OkHiVaaS-tvOS/Pods-OkHiVaaS-tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -134,7 +136,6 @@
 				A26CCDCBEADD09D7083F831B /* Pods-OkHiVaaSTests.debug.xcconfig */,
 				D6C7902D752A1E46C26B591B /* Pods-OkHiVaaSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -175,6 +176,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				6DF5410A2421378F00543302 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* OkHiVaaS */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* OkHiVaaSTests */,
@@ -309,6 +311,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -339,6 +342,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				6DF5410B2421378F00543302 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,7 +650,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.OkHiVaaS.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.okhi.okhivaas;
 				PRODUCT_NAME = OkHiVaaS;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -665,7 +669,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.OkHiVaaS.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.okhi.okhivaas;
 				PRODUCT_NAME = OkHiVaaS;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
