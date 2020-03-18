@@ -63,6 +63,9 @@ export default class App extends React.Component {
 
   render() {
     const {appLoading, user} = this.state;
+    const header = () => {
+      return null;
+    };
     const Home = (props: any) => <HomeScreen {...props} store={this.state} />;
     const Login = (props: any) => <LoginScreen {...props} store={this.state} />;
 
@@ -74,7 +77,7 @@ export default class App extends React.Component {
       <NavigationContainer>
         <Stack.Navigator initialRouteName={user ? 'home' : 'login'}>
           <Stack.Screen name="home" component={Home} />
-          <Stack.Screen name="login" component={Login} />
+          <Stack.Screen name="login" component={Login} options={{header}} />
         </Stack.Navigator>
       </NavigationContainer>
     );
