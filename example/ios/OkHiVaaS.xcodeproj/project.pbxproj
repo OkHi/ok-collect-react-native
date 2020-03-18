@@ -295,6 +295,10 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = ZV9VNGTKRL;
+						ProvisioningStyle = Automatic;
+					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -641,8 +645,11 @@
 			baseConfigurationReference = DD72D4F47B19CA60B9AA6301 /* Pods-OkHiVaaS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = ZV9VNGTKRL;
 				INFOPLIST_FILE = OkHiVaaS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0.0;
@@ -653,6 +660,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.okhi.okhivaas;
 				PRODUCT_NAME = OkHiVaaS;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -662,7 +670,10 @@
 			baseConfigurationReference = F29D0E6AA32CF4064BB656EE /* Pods-OkHiVaaS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZV9VNGTKRL;
 				INFOPLIST_FILE = OkHiVaaS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0.0;
@@ -673,6 +684,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.okhi.okhivaas;
 				PRODUCT_NAME = OkHiVaaS;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
