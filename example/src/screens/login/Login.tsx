@@ -88,7 +88,7 @@ export default class Login extends React.Component<
         <KeyboardAvoidingView behavior="padding">
           <LoginContainer style={containerBoxShadow}>
             <TitleContainer>
-              <H3>Save your OkHi location</H3>
+              <H3>Save your OkHi address</H3>
             </TitleContainer>
             <InputContainer>
               <InputBox regular valid={this.validateInput('firstName')}>
