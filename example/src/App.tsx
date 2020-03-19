@@ -80,9 +80,9 @@ export default class App extends React.Component<{}, Store> {
     return (
       <NavigationContainer>
         <StatusBar backgroundColor="#006064" barStyle="light-content" />
-        <Stack.Navigator initialRouteName={user ? 'home' : 'login'}>
+        <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
           <Stack.Screen
-            name="home"
+            name="Home"
             component={Home}
             options={{
               headerStyle: {backgroundColor: '#21838F'},
@@ -91,7 +91,7 @@ export default class App extends React.Component<{}, Store> {
             }}
           />
           <Stack.Screen
-            name="login"
+            name="Login"
             component={Login}
             options={{
               title: 'Sign up',
@@ -100,12 +100,14 @@ export default class App extends React.Component<{}, Store> {
             }}
           />
           <Stack.Screen
-            name="addAddress"
+            name="Add address"
             component={AddAddress}
             options={{
               title: 'Add your OkHi address',
               headerStyle: {backgroundColor: '#21838F'},
               headerTitleStyle: {color: 'white'},
+              headerBackTitleStyle: {color: 'white'},
+              headerTintColor: 'white',
             }}
           />
         </Stack.Navigator>
