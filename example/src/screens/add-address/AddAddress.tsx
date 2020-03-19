@@ -6,6 +6,11 @@ export default class AddAddress extends React.Component {
     super(props);
   }
   render() {
-    return <OkHiLocationManager />;
+    return (
+      <OkHiLocationManager
+        auth="SWF0ejlENkFOVDphZjNkZGQxMi00ZTI5LTQ1MDItODQyMS1iZTlkNmUzODcwZTU="
+        user={{phone: '+254700110590'}}
+      />
+    );
   }
 }
