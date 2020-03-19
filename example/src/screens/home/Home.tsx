@@ -1,10 +1,18 @@
 import React from 'react';
-import {View, Text} from 'react-native';
-import {Button} from 'react-native';
+import {Container, Fab, Icon} from 'native-base';
 
-export default function HomeScreen(props) {
-  return (
-    <View
-      style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}></View>
-  );
+export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Container>
+        <Fab style={{backgroundColor: '#21838F'}}>
+          <Icon name="add" fontSize={32} />
+        </Fab>
+      </Container>
+    );
+  }
 }
