@@ -1,11 +1,11 @@
 import React from 'react';
-import {View} from 'react-native';
+import {OkHiLocationManager} from '../../lib/okcollect-online';
 
 export default class AddAddress extends React.Component {
   constructor(props: any) {
     super(props);
   }
   render() {
-    return <View />;
+    return <OkHiLocationManager />;
   }
 }
