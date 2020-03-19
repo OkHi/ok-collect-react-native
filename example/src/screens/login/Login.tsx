@@ -3,7 +3,8 @@ import React from 'react';
 import {H3, Item, Input, Text, Button} from 'native-base';
 import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import styled from 'styled-components/native';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, NavigationProp} from '@react-navigation/native';
+import {Store} from '../../interfaces';
 
 interface LoginState {
   firstName: string;
@@ -11,7 +12,10 @@ interface LoginState {
   phone: string;
 }
 
-export default class Login extends React.Component<{}, LoginState> {
+export default class Login extends React.Component<
+  {navigation: NavigationProp<any>; store: Store},
+  LoginState
+> {
   constructor(props: any) {
     super(props);
     this.state = {
