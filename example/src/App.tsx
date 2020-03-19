@@ -1,4 +1,5 @@
 import React from 'react';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Repo from './services/repository';
@@ -63,9 +64,6 @@ export default class App extends React.Component {
 
   render() {
     const {appLoading, user} = this.state;
-    const header = () => {
-      return null;
-    };
     const Home = (props: any) => <HomeScreen {...props} store={this.state} />;
     const Login = (props: any) => <LoginScreen {...props} store={this.state} />;
 
@@ -75,9 +73,18 @@ export default class App extends React.Component {
 
     return (
       <NavigationContainer>
+        <StatusBar backgroundColor="#006064" barStyle="light-content" />
         <Stack.Navigator initialRouteName={user ? 'home' : 'login'}>
           <Stack.Screen name="home" component={Home} />
-          <Stack.Screen name="login" component={Login} options={{header}} />
+          <Stack.Screen
+            name="login"
+            component={Login}
+            options={{
+              title: 'Sign up',
+              headerStyle: {backgroundColor: '#21838F'},
+              headerTitleStyle: {color: 'white'},
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
