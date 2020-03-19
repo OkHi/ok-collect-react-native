@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {User} from '../interfaces';
 export default class Repository {
   async getUser(): Promise<null | {
     firstName: string;
@@ -17,7 +17,7 @@ export default class Repository {
     }
   }
 
-  async setUser(user: {firstName: string; lastName: string; phone: string}) {
+  async setUser(user: User) {
     try {
       return await AsyncStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
