@@ -7,6 +7,7 @@ import AppLoading from './components/AppLoading';
 import HeaderImage from './components/HeaderImage';
 import HomeScreen from './screens/home/Home';
 import LoginScreen from './screens/login/Login';
+import AddAddressScreen from './screens/add-address/AddAddress';
 import {Store, User} from './interfaces';
 
 const Stack = createStackNavigator();
@@ -68,6 +69,9 @@ export default class App extends React.Component<{}, Store> {
     const {appLoading, user} = this.state;
     const Home = (props: any) => <HomeScreen {...props} store={this.state} />;
     const Login = (props: any) => <LoginScreen {...props} store={this.state} />;
+    const AddAddress = (props: any) => (
+      <AddAddressScreen {...props} store={this.state} />
+    );
 
     if (appLoading) {
       return <AppLoading />;
@@ -91,6 +95,15 @@ export default class App extends React.Component<{}, Store> {
             component={Login}
             options={{
               title: 'Sign up',
+              headerStyle: {backgroundColor: '#21838F'},
+              headerTitleStyle: {color: 'white'},
+            }}
+          />
+          <Stack.Screen
+            name="addAddress"
+            component={AddAddress}
+            options={{
+              title: 'Add your OkHi address',
               headerStyle: {backgroundColor: '#21838F'},
               headerTitleStyle: {color: 'white'},
             }}
