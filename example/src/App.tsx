@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar, Image} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Repo from './services/repository';
@@ -75,7 +75,26 @@ export default class App extends React.Component {
       <NavigationContainer>
         <StatusBar backgroundColor="#006064" barStyle="light-content" />
         <Stack.Navigator initialRouteName={user ? 'home' : 'login'}>
-          <Stack.Screen name="home" component={Home} />
+          <Stack.Screen
+            name="home"
+            component={Home}
+            options={{
+              headerStyle: {backgroundColor: '#21838F'},
+              headerTitleStyle: {color: 'white'},
+              headerTitle: () => {
+                return (
+                  <Image
+                    source={{
+                      uri:
+                        'https://storage.googleapis.com/okhi-cdn/images/logos/okhi-logo-white.png',
+                    }}
+                    style={{width: 70, height: 50}}
+                    resizeMode="contain"
+                  />
+                );
+              },
+            }}
+          />
           <Stack.Screen
             name="login"
             component={Login}
