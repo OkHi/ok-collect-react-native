@@ -1,3 +1,2 @@
-import OkHiUser from './OkHiUser';
-
-export default {OkHiUser};
+export * from './OkHiLocationManager';
+export * from './OkHiUser';
