@@ -76,7 +76,7 @@ export default class Login extends React.Component<
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{name: 'home'}],
+        routes: [{name: 'Home'}],
       }),
     );
   };
