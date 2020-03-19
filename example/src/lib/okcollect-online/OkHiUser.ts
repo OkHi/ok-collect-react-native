@@ -1,4 +1,4 @@
-export default class OkHiUser {
+export class OkHiUser {
   constructor(
     private readonly user: {
       firstName?: string;
