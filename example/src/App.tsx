@@ -1,15 +1,17 @@
 import React from 'react';
-import {StatusBar, Image} from 'react-native';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Repo from './services/repository';
 import AppLoading from './components/AppLoading';
+import HeaderImage from './components/HeaderImage';
 import HomeScreen from './screens/home/Home';
 import LoginScreen from './screens/login/Login';
+import {Store, User} from './interfaces';
 
 const Stack = createStackNavigator();
 
-export default class App extends React.Component {
+export default class App extends React.Component<{}, Store> {
   private repo: Repo;
 
   constructor(props: any) {
@@ -20,7 +22,7 @@ export default class App extends React.Component {
     this.state = {
       appLoading: true,
       user: null,
-      addresses: null,
+      addresses: [],
       setUser: this.setUser,
     };
 
@@ -37,7 +39,7 @@ export default class App extends React.Component {
     });
   };
 
-  setUser = (user: {firstName: string; lastName: string; phone: string}) => {
+  setUser = (user: User) => {
     return new Promise(resolve => {
       this.setState({user}, () => {
         this.repo.setUser(user);
@@ -81,18 +83,7 @@ export default class App extends React.Component {
             options={{
               headerStyle: {backgroundColor: '#21838F'},
               headerTitleStyle: {color: 'white'},
-              headerTitle: () => {
-                return (
-                  <Image
-                    source={{
-                      uri:
-                        'https://storage.googleapis.com/okhi-cdn/images/logos/okhi-logo-white.png',
-                    }}
-                    style={{width: 70, height: 50}}
-                    resizeMode="contain"
-                  />
-                );
-              },
+              headerTitle: HeaderImage,
             }}
           />
           <Stack.Screen
