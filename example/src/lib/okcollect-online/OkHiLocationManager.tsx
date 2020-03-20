@@ -1,6 +1,6 @@
 import React from 'react';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {OkHiConfig, OkHiUser, OkHiLocation, OkHiError} from './';
 
 interface OkHiLocationManagerStartPayload {
@@ -51,7 +51,8 @@ export class OkHiLocationManager extends React.Component<
   private readonly onError: ((error: OkHiError) => any) | null;
   private readonly loader: JSX.Element | null;
 
-  private js: string | null;
+  private jsBeforeLoad: string | null;
+  private jsAfterLoad: string | null;
   private authToken: string | null;
   private startPayload: OkHiLocationManagerStartPayload | null;
 
@@ -67,7 +68,8 @@ export class OkHiLocationManager extends React.Component<
     this.loader = loader || null;
     this.authToken = null;
     this.startPayload = null;
-    this.js = null;
+    this.jsBeforeLoad = null;
+    this.jsAfterLoad = null;
     this.state = {
       loading: true,
     };
@@ -97,7 +99,7 @@ export class OkHiLocationManager extends React.Component<
           context: this.context || undefined,
         },
       };
-      this.js = `
+      this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
         bridge: {
@@ -105,6 +107,12 @@ export class OkHiLocationManager extends React.Component<
         },
         data: ${JSON.stringify(this.startPayload)}
       }
+      true;
+      `;
+      this.jsAfterLoad = `
+      window.startOkHiLocationManager({ receiveMessage: window.ReactNativeWebView.postMessage }, ${JSON.stringify(
+        this.startPayload,
+      )})
       true;
       `;
       this.setState({loading: false});
@@ -219,11 +227,16 @@ export class OkHiLocationManager extends React.Component<
   render() {
     const {loading} = this.state;
     const {loader} = this;
-    if (!loading && this.js) {
+    if (!loading && this.jsBeforeLoad && this.jsAfterLoad) {
       return (
         <WebView
           source={{uri: 'https://dev-manager-v5.okhi.io'}}
-          injectedJavaScriptBeforeContentLoaded={this.js}
+          injectedJavaScriptBeforeContentLoaded={
+            Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
+          }
+          injectedJavaScript={
+            Platform.OS === 'ios' ? undefined : this.jsAfterLoad
+          }
           onMessage={this.handleOnMessage}
         />
       );
