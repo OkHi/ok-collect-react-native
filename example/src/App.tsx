@@ -1,4 +1,5 @@
 import React from 'react';
+import {Root} from 'native-base';
 import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -8,6 +9,7 @@ import HeaderImage from './components/HeaderImage';
 import HomeScreen from './screens/home/Home';
 import LoginScreen from './screens/login/Login';
 import AddAddressScreen from './screens/add-address/AddAddress';
+import {OkHiLocation} from './lib/okcollect-online';
 import {Store, User} from './interfaces';
 
 const Stack = createStackNavigator();
@@ -24,11 +26,24 @@ export default class App extends React.Component<{}, Store> {
       appLoading: true,
       user: null,
       addresses: [],
-      setUser: this.setUser,
+      setValues: this.setValues,
     };
 
     this.init();
   }
+
+  setValues = (values: {user: User; address: OkHiLocation}) => {
+    return new Promise(resolve => {
+      const {user, address} = values;
+      let {addresses} = this.state;
+      addresses = [address, ...addresses];
+      this.setState({user, addresses}, () => {
+        this.repo.setUser(user);
+        this.repo.setAddress(address);
+        resolve();
+      });
+    });
+  };
 
   init = async () => {
     const user = await this.repo.getUser();
@@ -37,15 +52,6 @@ export default class App extends React.Component<{}, Store> {
       user,
       addresses,
       appLoading: false,
-    });
-  };
-
-  setUser = (user: User) => {
-    return new Promise(resolve => {
-      this.setState({user}, () => {
-        this.repo.setUser(user);
-        resolve();
-      });
     });
   };
 
@@ -78,40 +84,42 @@ export default class App extends React.Component<{}, Store> {
     }
 
     return (
-      <NavigationContainer>
-        <StatusBar backgroundColor="#006064" barStyle="light-content" />
-        <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerStyle: {backgroundColor: '#21838F'},
-              headerTitleStyle: {color: 'white'},
-              headerTitle: HeaderImage,
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              title: 'Sign up',
-              headerStyle: {backgroundColor: '#21838F'},
-              headerTitleStyle: {color: 'white'},
-            }}
-          />
-          <Stack.Screen
-            name="Add address"
-            component={AddAddress}
-            options={{
-              title: 'Add your OkHi address',
-              headerStyle: {backgroundColor: '#21838F'},
-              headerTitleStyle: {color: 'white'},
-              headerBackTitleStyle: {color: 'white'},
-              headerTintColor: 'white',
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Root>
+        <NavigationContainer>
+          <StatusBar backgroundColor="#006064" barStyle="light-content" />
+          <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                headerStyle: {backgroundColor: '#21838F'},
+                headerTitleStyle: {color: 'white'},
+                headerTitle: HeaderImage,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                title: 'Sign up',
+                headerStyle: {backgroundColor: '#21838F'},
+                headerTitleStyle: {color: 'white'},
+              }}
+            />
+            <Stack.Screen
+              name="Add address"
+              component={AddAddress}
+              options={{
+                title: 'Add your OkHi address',
+                headerStyle: {backgroundColor: '#21838F'},
+                headerTitleStyle: {color: 'white'},
+                headerBackTitleStyle: {color: 'white'},
+                headerTintColor: 'white',
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Root>
     );
   }
 }
