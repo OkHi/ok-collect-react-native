@@ -9,6 +9,6 @@ export interface User {
 export interface Store {
   user: User | null;
   addresses: Array<OkHiLocation>;
-  setValues: (values: {user: User; address: OkHiLocation}) => Promise<any>;
+  setValues: (values: {user: User; address?: OkHiLocation}) => Promise<any>;
   [key: string]: any;
 }
