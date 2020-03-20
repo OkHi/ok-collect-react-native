@@ -32,14 +32,21 @@ export default class App extends React.Component<{}, Store> {
     this.init();
   }
 
-  setValues = (values: {user: User; address: OkHiLocation}) => {
+  setValues = (values: {user: User; address?: OkHiLocation}) => {
     return new Promise(resolve => {
       const {user, address} = values;
       let {addresses} = this.state;
-      addresses = [address, ...addresses];
+      if (address) {
+        addresses = addresses.filter(
+          existingAddress => existingAddress.id !== address.id,
+        );
+        addresses = [address, ...addresses];
+      }
       this.setState({user, addresses}, () => {
         this.repo.setUser(user);
-        this.repo.setAddress(address);
+        if (address) {
+          this.repo.setAddress(address);
+        }
         resolve();
       });
     });
