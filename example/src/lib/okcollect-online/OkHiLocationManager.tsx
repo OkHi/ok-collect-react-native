@@ -1,5 +1,5 @@
 import React from 'react';
-import {WebView} from 'react-native-webview';
+import {WebView, WebViewMessageEvent} from 'react-native-webview';
 import {ActivityIndicator} from 'react-native';
 import {OkHiConfig, OkHiUser, OkHiLocation, OkHiError} from './';
 
@@ -12,7 +12,10 @@ interface OkHiLocationManagerStartPayload {
     };
     style?: OkHiStyle;
     context?: any;
-    config?: OkHiConfig;
+    config?: {
+      streetView: boolean;
+      [key: string]: any;
+    };
   };
 }
 
@@ -82,7 +85,15 @@ export class OkHiLocationManager extends React.Component<
           },
           user: this.user,
           style: this.style || undefined,
-          config: this.config || undefined,
+          config: {
+            streetView:
+              this.config && this.config.streetView
+                ? this.config.streetView
+                : false,
+            appBar: {
+              visible: false,
+            },
+          },
           context: this.context || undefined,
         },
       };
@@ -133,8 +144,75 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleWebViewLoaded = () => {
-    console.log('loaded');
+  handleFailure = () => {
+    if (this.onError) {
+      this.onError({
+        code: 'fatal_exit',
+        message: 'Something went wrong during the address creation process',
+      });
+    }
+  };
+
+  handleSuccess = (response: any) => {
+    let {user, location} = response.payload;
+    user = {
+      firstName: user.first_name || null,
+      lastName: user.last_name || null,
+      phone: user.phone || null,
+      id: user.id || null,
+    };
+    location = {
+      id: location.id || null,
+      geoPoint:
+        location.geo_point && location.geo_point.lat && location.geo_point.lon
+          ? {lat: location.geo_point.lat, lon: location.geo_point.lon}
+          : null,
+      userId: location.user_id || null,
+      streetName: location.street_name || null,
+      propertyName: location.property_name || null,
+      placeId: location.place_id || null,
+      photo: location.photo || null,
+      url: location.url || null,
+      plusCode: location.plus_code || null,
+      title: location.title || location.display_title || null,
+      other_information: location.other_information || null,
+      directions: location.directions || null,
+      streetView: !location.street_view
+        ? null
+        : {
+            geoPoint: location.street_view.geo_point || null,
+            panoId: location.street_view.pano_id || null,
+            url: location.street_view.url || null,
+          },
+    };
+    if (this.onSuccess) {
+      this.onSuccess(location, user);
+    }
+  };
+
+  handleOnMessage = (event: WebViewMessageEvent) => {
+    try {
+      const response: {
+        message:
+          | 'location_selected'
+          | 'location_created'
+          | 'location_updated'
+          | 'fatal_exit';
+        payload: {user: any; location: any} | string;
+      } = JSON.parse(event.nativeEvent.data);
+      if (response.message === 'fatal_exit') {
+        this.handleFailure();
+      } else {
+        this.handleSuccess(response);
+      }
+    } catch (error) {
+      if (this.onError) {
+        this.onError({
+          code: 'invalid_response',
+          message: 'Invalid response received',
+        });
+      }
+    }
   };
 
   render() {
@@ -145,7 +223,7 @@ export class OkHiLocationManager extends React.Component<
         <WebView
           source={{uri: 'http://localhost:5000'}}
           injectedJavaScriptBeforeContentLoaded={this.js}
-          onMessage={() => {}}
+          onMessage={this.handleOnMessage}
         />
       );
     } else if (loading && loader) {
