@@ -30,7 +30,7 @@ function Loader() {
   );
 }
 
-export default class AddAddress extends React.Component<{
+export default class AddAddress extends React.PureComponent<{
   navigation: NavigationProp<any>;
   store: Store;
 }> {
@@ -42,9 +42,8 @@ export default class AddAddress extends React.Component<{
   }
 
   handleSuccess = async (location: OkHiLocation, user: OkHiUser) => {
-    await this.props.store.setUser(user);
-    await this.props.store.setAddress(location);
     this.props.navigation.goBack();
+    this.props.store.setValues({user, address: location});
   };
 
   handleError = () => {
@@ -61,6 +60,7 @@ export default class AddAddress extends React.Component<{
         loader={<Loader />}
         onSuccess={this.handleSuccess}
         onError={this.handleError}
+        config={{streetView: true}}
       />
     );
   }
