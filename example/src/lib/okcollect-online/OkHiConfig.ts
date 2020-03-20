@@ -5,5 +5,4 @@ export interface OkHiAppBarConfiguration {
 
 export interface OkHiConfig {
   streetView?: boolean;
-  appBar?: OkHiAppBarConfiguration;
 }
