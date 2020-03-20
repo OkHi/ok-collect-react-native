@@ -3,6 +3,8 @@ import React from 'react';
 import {H3, Item, Input, Text, Button} from 'native-base';
 import {KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import styled from 'styled-components/native';
+import {CommonActions, NavigationProp} from '@react-navigation/native';
+import {Store} from '../../interfaces';
 
 interface LoginState {
   firstName: string;
@@ -10,7 +12,10 @@ interface LoginState {
   phone: string;
 }
 
-export default class Login extends React.Component<{}, LoginState> {
+export default class Login extends React.Component<
+  {navigation: NavigationProp<any>; store: Store},
+  LoginState
+> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -65,6 +70,17 @@ export default class Login extends React.Component<{}, LoginState> {
     return firstNameValid && lastNameValid && phoneValid;
   };
 
+  handleSubmit = async () => {
+    const {navigation, store} = this.props;
+    await store.setValues({user: this.state});
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      }),
+    );
+  };
+
   render() {
     const {firstName, lastName, phone} = this.state;
     return (
@@ -72,7 +88,7 @@ export default class Login extends React.Component<{}, LoginState> {
         <KeyboardAvoidingView behavior="padding">
           <LoginContainer style={containerBoxShadow}>
             <TitleContainer>
-              <H3>Save your OkHi location</H3>
+              <H3>Save your OkHi address</H3>
             </TitleContainer>
             <InputContainer>
               <InputBox regular valid={this.validateInput('firstName')}>
@@ -84,6 +100,7 @@ export default class Login extends React.Component<{}, LoginState> {
                   onChangeText={text =>
                     this.handleTextChange('firstName', text)
                   }
+                  placeholderTextColor="#9E9E9E"
                 />
               </InputBox>
             </InputContainer>
@@ -94,6 +111,7 @@ export default class Login extends React.Component<{}, LoginState> {
                   autoCompleteType="off"
                   value={lastName}
                   onChangeText={text => this.handleTextChange('lastName', text)}
+                  placeholderTextColor="#9E9E9E"
                 />
               </InputBox>
             </InputContainer>
@@ -105,14 +123,16 @@ export default class Login extends React.Component<{}, LoginState> {
                   keyboardType="phone-pad"
                   onChangeText={text => this.handleTextChange('phone', text)}
                   value={phone}
+                  placeholderTextColor="#9E9E9E"
                 />
               </InputBox>
               <HintText>Hint: +254700110590</HintText>
             </InputContainer>
             <InputContainer>
               <SubmitButton
+                onPress={this.handleSubmit}
                 block
-                disabled={this.validateSubmit()}
+                disabled={!this.validateSubmit()}
                 active={this.validateSubmit()}>
                 <Text>Next</Text>
               </SubmitButton>
@@ -164,7 +184,7 @@ const InputBox = styled(Item)`
       ? '#21838f'
       : props.valid === false
       ? 'red'
-      : '#BDBDBD'};
+      : '#9E9E9E'};
 `;
 
 const InputItem = styled(Input)`

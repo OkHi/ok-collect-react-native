@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {OkHiLocation} from '../lib/okcollect-online';
+import {User} from '../interfaces';
 export default class Repository {
   async getUser(): Promise<null | {
     firstName: string;
@@ -17,23 +18,36 @@ export default class Repository {
     }
   }
 
-  async setUser(user: {firstName: string; lastName: string; phone: string}) {
+  async setUser(user: User) {
     try {
-      return await AsyncStorage.setItem('user', JSON.stringify(user));
+      await AsyncStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
-      return null;
+      return;
     }
   }
 
-  async getAddresses() {
+  async getAddresses(): Promise<Array<OkHiLocation>> {
     try {
       const addresses = await AsyncStorage.getItem('addresses');
       if (!addresses) {
-        return null;
+        return [];
       }
       return JSON.parse(addresses);
     } catch (error) {
-      return null;
+      return [];
+    }
+  }
+
+  async setAddress(address: OkHiLocation) {
+    try {
+      let addresses = await this.getAddresses();
+      addresses = addresses.filter(
+        existingAddress => existingAddress.id !== address.id,
+      );
+      addresses = [address, ...addresses];
+      await AsyncStorage.setItem('addresses', JSON.stringify(addresses));
+    } catch (error) {
+      return;
     }
   }
 }
