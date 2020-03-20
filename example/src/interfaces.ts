@@ -1,3 +1,5 @@
+import {OkHiLocation} from './lib/okcollect-online';
+
 export interface User {
   firstName?: string;
   lastName?: string;
@@ -6,7 +8,7 @@ export interface User {
 
 export interface Store {
   user: User | null;
-  addresses: [];
-  setUser: (user: User) => Promise<any>;
+  addresses: Array<OkHiLocation>;
+  setValues: (values: {user: User; address: OkHiLocation}) => Promise<any>;
   [key: string]: any;
 }
