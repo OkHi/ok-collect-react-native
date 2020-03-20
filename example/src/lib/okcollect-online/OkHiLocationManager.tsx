@@ -110,10 +110,9 @@ export class OkHiLocationManager extends React.Component<
       true;
       `;
       this.jsAfterLoad = `
-      window.startOkHiLocationManager({ receiveMessage: window.ReactNativeWebView.postMessage }, ${JSON.stringify(
-        this.startPayload,
-      )})
-      true;
+      window.startOkHiLocationManager({ 
+        receiveMessage: function(data) { window.ReactNativeWebView.postMessage(data) } }, 
+        ${JSON.stringify(this.startPayload)})
       `;
       this.setState({loading: false});
     } catch (error) {
@@ -201,6 +200,7 @@ export class OkHiLocationManager extends React.Component<
 
   handleOnMessage = (event: WebViewMessageEvent) => {
     try {
+      console.log('woop!');
       const response: {
         message:
           | 'location_selected'
