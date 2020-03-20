@@ -1,11 +1,14 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, FlatList, View} from 'react-native';
 import {Container, Fab, Icon} from 'native-base';
 import {NavigationProp} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import {Store} from '../../interfaces';
+import AddressItem from '../../components/AddressItem';
 
 export default class HomeScreen extends React.Component<{
   navigation: NavigationProp<any>;
+  store: Store;
 }> {
   constructor(props: any) {
     super(props);
@@ -36,10 +39,34 @@ export default class HomeScreen extends React.Component<{
     }
   };
 
+  renderAddresses = () => {
+    const dividerStyles = {
+      borderBottomWidth: 0.5,
+      borderBottomColor: '#e0e0e0',
+      marginLeft: 15,
+      marginRight: 15,
+    };
+    const {store} = this.props;
+    const {addresses} = store;
+    if (!addresses.length) {
+      return null;
+    }
+    return (
+      <FlatList
+        data={addresses}
+        renderItem={({item}) => <AddressItem address={item} />}
+        keyExtractor={(item, index) => String(index)}
+        ItemSeparatorComponent={() => <View style={dividerStyles} />}
+      />
+    );
+  };
+
   render() {
+    const fabStyles = {backgroundColor: '#21838F'};
     return (
       <Container>
-        <Fab style={{backgroundColor: '#21838F'}} onPress={this.handleFabPress}>
+        {this.renderAddresses()}
+        <Fab style={fabStyles} onPress={this.handleFabPress}>
           <Icon name="add" fontSize={32} />
         </Fab>
       </Container>
