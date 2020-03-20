@@ -222,7 +222,7 @@ export class OkHiLocationManager extends React.Component<
     if (!loading && this.js) {
       return (
         <WebView
-          source={{uri: 'http://localhost:5000'}}
+          source={{uri: 'https://dev-manager-v5.okhi.io'}}
           injectedJavaScriptBeforeContentLoaded={this.js}
           onMessage={this.handleOnMessage}
         />
