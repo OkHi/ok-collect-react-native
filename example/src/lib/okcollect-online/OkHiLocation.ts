@@ -9,4 +9,14 @@ export interface OkHiLocation {
   directions?: string;
   otherInformation?: string;
   url?: string;
+  createdAt?: string;
+  photo?: string;
+  geoPoint?: {
+    lat: number;
+    lon: number;
+  };
+  streetView?: {
+    panoId: string;
+    url: string;
+  };
 }
