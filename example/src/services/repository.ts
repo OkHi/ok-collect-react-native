@@ -41,6 +41,9 @@ export default class Repository {
   async setAddress(address: OkHiLocation) {
     try {
       let addresses = await this.getAddresses();
+      addresses = addresses.filter(
+        existingAddress => existingAddress.id !== address.id,
+      );
       addresses = [address, ...addresses];
       await AsyncStorage.setItem('addresses', JSON.stringify(addresses));
     } catch (error) {
