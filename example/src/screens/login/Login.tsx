@@ -70,9 +70,9 @@ export default class Login extends React.Component<
     return firstNameValid && lastNameValid && phoneValid;
   };
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const {navigation, store} = this.props;
-    store.setUser(this.state);
+    await store.setValues({user: this.state});
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
