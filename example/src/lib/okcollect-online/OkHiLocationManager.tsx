@@ -156,8 +156,8 @@ export class OkHiLocationManager extends React.Component<
   handleSuccess = (response: any) => {
     let {user, location} = response.payload;
     user = {
-      firstName: user.first_name || null,
-      lastName: user.last_name || null,
+      firstName: user.firstName || null,
+      lastName: user.lastName || null,
       phone: user.phone || null,
       id: user.id || null,
     };
@@ -167,6 +167,7 @@ export class OkHiLocationManager extends React.Component<
         location.geo_point && location.geo_point.lat && location.geo_point.lon
           ? {lat: location.geo_point.lat, lon: location.geo_point.lon}
           : null,
+      createdAt: location.created_at || null,
       userId: location.user_id || null,
       streetName: location.street_name || null,
       propertyName: location.property_name || null,
@@ -175,7 +176,7 @@ export class OkHiLocationManager extends React.Component<
       url: location.url || null,
       plusCode: location.plus_code || null,
       title: location.title || location.display_title || null,
-      other_information: location.other_information || null,
+      otherInformation: location.other_information || null,
       directions: location.directions || null,
       streetView: !location.street_view
         ? null
