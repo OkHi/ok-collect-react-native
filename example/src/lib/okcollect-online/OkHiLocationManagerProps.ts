@@ -1,5 +1,5 @@
 import {OkHiUser, OkHiConfig, OkHiStyle, OkHiLocation, OkHiError} from './';
-import {StyleProp, ViewStyle, ViewProps} from 'react-native';
+import {ViewProps} from 'react-native';
 import {WebViewProps} from 'react-native-webview';
 
 export interface OkHiLocationManagerProps {
