@@ -1,6 +1,6 @@
 import React from 'react';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
-import {ActivityIndicator, Platform} from 'react-native';
+import {ActivityIndicator, Platform, Modal, SafeAreaView} from 'react-native';
 import {
   OkHiConfig,
   OkHiUser,
@@ -13,8 +13,8 @@ import {
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
   payload: {
-    user: OkHiUser;
-    auth: {
+    user?: OkHiUser;
+    auth?: {
       authToken: string;
     };
     style?: OkHiStyle;
@@ -31,13 +31,14 @@ interface OkHiLocationManagerResponse {
     | 'location_selected'
     | 'location_created'
     | 'location_updated'
+    | 'exit_app'
     | 'fatal_exit';
   response: string | {user: any; location: any} | string;
 }
 
 export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
-  {loading: boolean}
+  {loading: boolean; modalVisible: boolean}
 > {
   private readonly user: OkHiUser;
   private readonly auth: string | null;
@@ -70,6 +71,7 @@ export class OkHiLocationManager extends React.Component<
     this.jsAfterLoad = null;
     this.state = {
       loading: true,
+      modalVisible: true,
     };
     this.init();
   }
@@ -77,26 +79,36 @@ export class OkHiLocationManager extends React.Component<
   private init = async () => {
     try {
       this.authToken = await this.fetchAuthToken();
-      this.startPayload = {
-        message: 'select_location',
-        payload: {
-          auth: {
-            authToken: this.authToken,
-          },
-          user: this.user,
-          style: this.style || undefined,
-          config: {
-            streetView:
-              this.config && this.config.streetView
-                ? this.config.streetView
-                : false,
-            appBar: {
-              visible: false,
-            },
-          },
-          context: this.context || undefined,
-        },
+      const message = 'select_location';
+      const auth = this.authToken ? {authToken: this.authToken} : undefined;
+      const user = this.user && this.user.phone ? this.user : undefined;
+      const style =
+        this.style && this.style.base
+          ? {
+              base: {
+                ...this.style.base,
+                logo:
+                  this.config && this.config.appBar && this.config.appBar.logo
+                    ? this.config.appBar.logo
+                    : undefined,
+              },
+            }
+          : undefined;
+      const config = this.config
+        ? {
+            streetView: this.config.streetView || false,
+            appBar: this.config.appBar || undefined,
+          }
+        : undefined;
+      const context = undefined;
+      const payload = {
+        auth,
+        user,
+        style,
+        config,
+        context,
       };
+      this.startPayload = {message, payload};
       this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
@@ -196,6 +208,12 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
+  handleExit = () => {
+    if (typeof this.props.onCloseRequest === 'function') {
+      this.props.onCloseRequest();
+    }
+  };
+
   handleOnMessage = (event: WebViewMessageEvent) => {
     try {
       const response: OkHiLocationManagerResponse = JSON.parse(
@@ -203,6 +221,8 @@ export class OkHiLocationManager extends React.Component<
       );
       if (response.message === 'fatal_exit') {
         this.handleFailure();
+      } else if (response.message === 'exit_app') {
+        this.handleExit();
       } else {
         this.handleSuccess(response);
       }
@@ -216,26 +236,39 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  render() {
+  renderContent = () => {
     const {loading} = this.state;
     const {loader} = this;
     if (!loading && this.jsBeforeLoad && this.jsAfterLoad) {
       return (
-        <WebView
-          source={{uri: 'https://dev-manager-v5.okhi.io'}}
-          injectedJavaScriptBeforeContentLoaded={
-            Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
-          }
-          injectedJavaScript={
-            Platform.OS === 'ios' ? undefined : this.jsAfterLoad
-          }
-          onMessage={this.handleOnMessage}
-        />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#37474F'}}>
+          <WebView
+            source={{uri: 'https://dev-manager-v5.okhi.io'}}
+            injectedJavaScriptBeforeContentLoaded={
+              Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
+            }
+            injectedJavaScript={
+              Platform.OS === 'ios' ? undefined : this.jsAfterLoad
+            }
+            onMessage={this.handleOnMessage}
+          />
+        </SafeAreaView>
       );
-    } else if (loading && loader) {
-      return loader;
-    } else {
-      return <ActivityIndicator />;
     }
+    if (loading && loader) {
+      return loader;
+    }
+    return <ActivityIndicator />;
+  };
+
+  render() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.props.launch}>
+        {this.renderContent()}
+      </Modal>
+    );
   }
 }
