@@ -19,6 +19,7 @@ import {
   OkHiConfig,
   OkHiAppBarConfiguration,
   OkHiLocation,
+  OkHiError,
 } from '../../lib/okcollect-online';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
@@ -85,9 +86,16 @@ export default class HomeScreen extends React.Component<
     });
   };
 
-  handleError = () => {
-    Toast.show({text: 'Opps, something went wrong. Please try again'});
+  handleError = (error: OkHiError) => {
     this.setState({launchOkHi: false});
+    if (error.code === 'network_request_failed') {
+      Toast.show({
+        text:
+          'Netowrk error. Please check your internet connection and try again',
+      });
+    } else {
+      Toast.show({text: 'Opps, something went wrong. Please try again'});
+    }
   };
 
   renderAddresses = () => {
