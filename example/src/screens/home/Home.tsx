@@ -7,6 +7,7 @@ import {
   Text,
   StyleProp,
   ViewStyle,
+  ViewProps,
 } from 'react-native';
 import {Container, Fab, Icon} from 'native-base';
 import {Toast} from 'native-base';
@@ -139,6 +140,8 @@ export default class HomeScreen extends React.Component<
 
     const config: OkHiConfig = {streetView: true, appBar: appBarConfig};
 
+    const safeAreaViewProps: ViewProps = {style: {backgroundColor: '#37474F'}};
+
     return (
       <OkHiLocationManager
         auth={auth}
@@ -150,6 +153,7 @@ export default class HomeScreen extends React.Component<
         onSuccess={this.handleSuccess}
         onError={this.handleError}
         onCloseRequest={() => this.setState({launchOkHi: false})}
+        safeAreaViewProps={safeAreaViewProps}
       />
     );
   };
