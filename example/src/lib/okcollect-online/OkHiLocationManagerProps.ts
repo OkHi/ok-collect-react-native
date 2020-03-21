@@ -8,4 +8,6 @@ export interface OkHiLocationManagerProps {
   onSuccess?: (location: OkHiLocation, user: OkHiUser) => any;
   onError?: (error: OkHiError) => any;
   loader?: JSX.Element;
+  launch?: boolean;
+  onCloseRequest?: () => any;
 }
