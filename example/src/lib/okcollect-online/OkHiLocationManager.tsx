@@ -248,6 +248,7 @@ export class OkHiLocationManager extends React.Component<
     if (!this.props.launch) {
       return null;
     }
+
     if (this.state.loading || !this.jsBeforeLoad || !this.jsAfterLoad) {
       this.init();
       if (this.props.loader) {
@@ -255,11 +256,19 @@ export class OkHiLocationManager extends React.Component<
       }
       return <ActivityIndicator />;
     }
+
     const safeAreaViewProps = this.props.safeAreaViewProps || {};
     const webviewProps = this.props.webviewProps || {};
     const defaultSafeAreaViewStyles = {flex: 1};
+    const safeAreaViewStyles: {} =
+      safeAreaViewProps && safeAreaViewProps.style
+        ? safeAreaViewProps.style
+        : {};
+
     return (
-      <SafeAreaView style={defaultSafeAreaViewStyles} {...safeAreaViewProps}>
+      <SafeAreaView
+        {...safeAreaViewProps}
+        style={{...safeAreaViewStyles, ...defaultSafeAreaViewStyles}}>
         <WebView
           {...webviewProps}
           source={{uri: 'https://dev-manager-v5.okhi.io'}}
