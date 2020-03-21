@@ -248,33 +248,31 @@ export class OkHiLocationManager extends React.Component<
     if (!this.props.launch) {
       return null;
     }
-    this.init();
+    if (this.state.loading || !this.jsBeforeLoad || !this.jsAfterLoad) {
+      this.init();
+      if (this.props.loader) {
+        return this.props.loader;
+      }
+      return <ActivityIndicator />;
+    }
     const safeAreaViewProps = this.props.safeAreaViewProps || {};
     const webviewProps = this.props.webviewProps || {};
     const defaultSafeAreaViewStyles = {flex: 1};
-    const {loading} = this.state;
-    const {loader} = this;
-    if (!loading && this.jsBeforeLoad && this.jsAfterLoad) {
-      return (
-        <SafeAreaView style={defaultSafeAreaViewStyles} {...safeAreaViewProps}>
-          <WebView
-            {...webviewProps}
-            source={{uri: 'https://dev-manager-v5.okhi.io'}}
-            injectedJavaScriptBeforeContentLoaded={
-              Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
-            }
-            injectedJavaScript={
-              Platform.OS === 'ios' ? undefined : this.jsAfterLoad
-            }
-            onMessage={this.handleOnMessage}
-          />
-        </SafeAreaView>
-      );
-    }
-    if (loading && loader) {
-      return loader;
-    }
-    return <ActivityIndicator />;
+    return (
+      <SafeAreaView style={defaultSafeAreaViewStyles} {...safeAreaViewProps}>
+        <WebView
+          {...webviewProps}
+          source={{uri: 'https://dev-manager-v5.okhi.io'}}
+          injectedJavaScriptBeforeContentLoaded={
+            Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
+          }
+          injectedJavaScript={
+            Platform.OS === 'ios' ? undefined : this.jsAfterLoad
+          }
+          onMessage={this.handleOnMessage}
+        />
+      </SafeAreaView>
+    );
   };
 
   render() {
