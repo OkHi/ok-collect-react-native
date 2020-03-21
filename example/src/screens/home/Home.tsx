@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import {Container, Fab, Icon} from 'native-base';
+import {Toast} from 'native-base';
 import {NavigationProp} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {
@@ -17,6 +18,7 @@ import {
   OkHiStyle,
   OkHiConfig,
   OkHiAppBarConfiguration,
+  OkHiLocation,
 } from '../../lib/okcollect-online';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
@@ -77,6 +79,17 @@ export default class HomeScreen extends React.Component<
     }
   };
 
+  handleSuccess = (location: OkHiLocation, user: OkHiUser) => {
+    this.setState({launchOkHi: false}, () => {
+      this.props.store.setValues({user, address: location});
+    });
+  };
+
+  handleError = () => {
+    Toast.show({text: 'Opps, something went wrong. Please try again'});
+    this.setState({launchOkHi: false});
+  };
+
   renderAddresses = () => {
     const dividerStyles = {
       borderBottomWidth: 0.5,
@@ -97,14 +110,6 @@ export default class HomeScreen extends React.Component<
         ItemSeparatorComponent={() => <View style={dividerStyles} />}
       />
     );
-  };
-
-  handleSuccess = () => {
-    this.setState({launchOkHi: false});
-  };
-
-  handleError = () => {
-    this.setState({launchOkHi: false});
   };
 
   renderOkHi = () => {
