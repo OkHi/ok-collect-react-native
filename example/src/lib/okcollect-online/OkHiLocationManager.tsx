@@ -1,7 +1,14 @@
 import React from 'react';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
 import {ActivityIndicator, Platform} from 'react-native';
-import {OkHiConfig, OkHiUser, OkHiLocation, OkHiError} from './';
+import {
+  OkHiConfig,
+  OkHiUser,
+  OkHiLocation,
+  OkHiError,
+  OkHiLocationManagerProps,
+  OkHiStyle,
+} from './';
 
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
@@ -19,22 +26,13 @@ interface OkHiLocationManagerStartPayload {
   };
 }
 
-export interface OkHiLocationManagerProps {
-  auth: string;
-  user: OkHiUser;
-  config?: OkHiConfig;
-  style?: OkHiStyle;
-  onSuccess?: (location: OkHiLocation, user: OkHiUser) => any;
-  onError?: (error: OkHiError) => any;
-  loader?: JSX.Element;
-}
-
-export interface OkHiStyle {
-  base?: {
-    color?: string;
-    name?: string;
-    logo?: string;
-  };
+interface OkHiLocationManagerResponse {
+  message:
+    | 'location_selected'
+    | 'location_created'
+    | 'location_updated'
+    | 'fatal_exit';
+  response: string | {user: any; location: any} | string;
 }
 
 export class OkHiLocationManager extends React.Component<
@@ -200,15 +198,9 @@ export class OkHiLocationManager extends React.Component<
 
   handleOnMessage = (event: WebViewMessageEvent) => {
     try {
-      console.log('woop!');
-      const response: {
-        message:
-          | 'location_selected'
-          | 'location_created'
-          | 'location_updated'
-          | 'fatal_exit';
-        payload: {user: any; location: any} | string;
-      } = JSON.parse(event.nativeEvent.data);
+      const response: OkHiLocationManagerResponse = JSON.parse(
+        event.nativeEvent.data,
+      );
       if (response.message === 'fatal_exit') {
         this.handleFailure();
       } else {
