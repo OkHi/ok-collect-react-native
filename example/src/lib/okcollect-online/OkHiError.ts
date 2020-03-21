@@ -1,4 +1,8 @@
 export interface OkHiError {
-  code: string;
+  code:
+    | 'invalid_auth_token'
+    | 'fatal_exit'
+    | 'invalid_response'
+    | 'invalid_phone';
   message: string;
 }
