@@ -73,7 +73,6 @@ export class OkHiLocationManager extends React.Component<
       loading: true,
       modalVisible: true,
     };
-    this.init();
   }
 
   private init = async () => {
@@ -126,12 +125,21 @@ export class OkHiLocationManager extends React.Component<
       `;
       this.setState({loading: false});
     } catch (error) {
-      if (this.onError) {
-        this.onError({
-          code: 'invalid_auth_token',
-          message: 'Unable to establish a secure connection with remote server',
-        });
-      }
+      this.handleInitError(error);
+    }
+  };
+
+  private handleInitError = (error: any) => {
+    if (error.toString().includes('token') && this.onError) {
+      this.onError({
+        code: 'invalid_auth_token',
+        message: 'Unable to establish a secure connection with remote server',
+      });
+    } else if (this.onError) {
+      this.onError({
+        code: 'network_request_failed',
+        message: 'Unable to establish a secure connection with remote server',
+      });
     }
   };
 
@@ -237,12 +245,20 @@ export class OkHiLocationManager extends React.Component<
   };
 
   renderContent = () => {
+    if (!this.props.launch) {
+      return null;
+    }
+    this.init();
+    const safeAreaViewProps = this.props.safeAreaViewProps || {};
+    const webviewProps = this.props.webviewProps || {};
+    const defaultSafeAreaViewStyles = {flex: 1};
     const {loading} = this.state;
     const {loader} = this;
     if (!loading && this.jsBeforeLoad && this.jsAfterLoad) {
       return (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#37474F'}}>
+        <SafeAreaView style={defaultSafeAreaViewStyles} {...safeAreaViewProps}>
           <WebView
+            {...webviewProps}
             source={{uri: 'https://dev-manager-v5.okhi.io'}}
             injectedJavaScriptBeforeContentLoaded={
               Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
