@@ -1,13 +1,20 @@
 import React from 'react';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
-import {ActivityIndicator, Platform} from 'react-native';
-import {OkHiConfig, OkHiUser, OkHiLocation, OkHiError} from './';
+import {ActivityIndicator, Platform, Modal, SafeAreaView} from 'react-native';
+import {
+  OkHiConfig,
+  OkHiUser,
+  OkHiLocation,
+  OkHiError,
+  OkHiLocationManagerProps,
+  OkHiStyle,
+} from './';
 
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
   payload: {
-    user: OkHiUser;
-    auth: {
+    user?: OkHiUser;
+    auth?: {
       authToken: string;
     };
     style?: OkHiStyle;
@@ -19,27 +26,19 @@ interface OkHiLocationManagerStartPayload {
   };
 }
 
-export interface OkHiLocationManagerProps {
-  auth: string;
-  user: OkHiUser;
-  config?: OkHiConfig;
-  style?: OkHiStyle;
-  onSuccess?: (location: OkHiLocation, user: OkHiUser) => any;
-  onError?: (error: OkHiError) => any;
-  loader?: JSX.Element;
-}
-
-export interface OkHiStyle {
-  base?: {
-    color?: string;
-    name?: string;
-    logo?: string;
-  };
+interface OkHiLocationManagerResponse {
+  message:
+    | 'location_selected'
+    | 'location_created'
+    | 'location_updated'
+    | 'exit_app'
+    | 'fatal_exit';
+  response: string | {user: any; location: any} | string;
 }
 
 export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
-  {loading: boolean}
+  {loading: boolean; modalVisible: boolean}
 > {
   private readonly user: OkHiUser;
   private readonly auth: string | null;
@@ -72,33 +71,43 @@ export class OkHiLocationManager extends React.Component<
     this.jsAfterLoad = null;
     this.state = {
       loading: true,
+      modalVisible: true,
     };
-    this.init();
   }
 
   private init = async () => {
     try {
       this.authToken = await this.fetchAuthToken();
-      this.startPayload = {
-        message: 'select_location',
-        payload: {
-          auth: {
-            authToken: this.authToken,
-          },
-          user: this.user,
-          style: this.style || undefined,
-          config: {
-            streetView:
-              this.config && this.config.streetView
-                ? this.config.streetView
-                : false,
-            appBar: {
-              visible: false,
-            },
-          },
-          context: this.context || undefined,
-        },
+      const message = 'select_location';
+      const auth = this.authToken ? {authToken: this.authToken} : undefined;
+      const user = this.user && this.user.phone ? this.user : undefined;
+      const style =
+        this.style && this.style.base
+          ? {
+              base: {
+                ...this.style.base,
+                logo:
+                  this.config && this.config.appBar && this.config.appBar.logo
+                    ? this.config.appBar.logo
+                    : undefined,
+              },
+            }
+          : undefined;
+      const config = this.config
+        ? {
+            streetView: this.config.streetView || false,
+            appBar: this.config.appBar || undefined,
+          }
+        : undefined;
+      const context = undefined;
+      const payload = {
+        auth,
+        user,
+        style,
+        config,
+        context,
       };
+      this.startPayload = {message, payload};
       this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
@@ -116,12 +125,21 @@ export class OkHiLocationManager extends React.Component<
       `;
       this.setState({loading: false});
     } catch (error) {
-      if (this.onError) {
-        this.onError({
-          code: 'invalid_auth_token',
-          message: 'Unable to establish a secure connection with remote server',
-        });
-      }
+      this.handleInitError(error);
+    }
+  };
+
+  private handleInitError = (error: any) => {
+    if (error.toString().includes('token') && this.onError) {
+      this.onError({
+        code: 'invalid_auth_token',
+        message: 'Unable to establish a secure connection with remote server',
+      });
+    } else if (this.onError) {
+      this.onError({
+        code: 'network_request_failed',
+        message: 'Unable to establish a secure connection with remote server',
+      });
     }
   };
 
@@ -198,19 +216,21 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
+  handleExit = () => {
+    if (typeof this.props.onCloseRequest === 'function') {
+      this.props.onCloseRequest();
+    }
+  };
+
   handleOnMessage = (event: WebViewMessageEvent) => {
     try {
-      console.log('woop!');
-      const response: {
-        message:
-          | 'location_selected'
-          | 'location_created'
-          | 'location_updated'
-          | 'fatal_exit';
-        payload: {user: any; location: any} | string;
-      } = JSON.parse(event.nativeEvent.data);
+      const response: OkHiLocationManagerResponse = JSON.parse(
+        event.nativeEvent.data,
+      );
       if (response.message === 'fatal_exit') {
         this.handleFailure();
+      } else if (response.message === 'exit_app') {
+        this.handleExit();
       } else {
         this.handleSuccess(response);
       }
@@ -224,12 +244,33 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  render() {
-    const {loading} = this.state;
-    const {loader} = this;
-    if (!loading && this.jsBeforeLoad && this.jsAfterLoad) {
-      return (
+  renderContent = () => {
+    if (!this.props.launch) {
+      return null;
+    }
+
+    if (this.state.loading || !this.jsBeforeLoad || !this.jsAfterLoad) {
+      this.init();
+      if (this.props.loader) {
+        return this.props.loader;
+      }
+      return <ActivityIndicator />;
+    }
+
+    const safeAreaViewProps = this.props.safeAreaViewProps || {};
+    const webviewProps = this.props.webviewProps || {};
+    const defaultSafeAreaViewStyles = {flex: 1};
+    const safeAreaViewStyles: {} =
+      safeAreaViewProps && safeAreaViewProps.style
+        ? safeAreaViewProps.style
+        : {};
+
+    return (
+      <SafeAreaView
+        {...safeAreaViewProps}
+        style={{...safeAreaViewStyles, ...defaultSafeAreaViewStyles}}>
         <WebView
+          {...webviewProps}
           source={{uri: 'https://dev-manager-v5.okhi.io'}}
           injectedJavaScriptBeforeContentLoaded={
             Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
@@ -239,11 +280,18 @@ export class OkHiLocationManager extends React.Component<
           }
           onMessage={this.handleOnMessage}
         />
-      );
-    } else if (loading && loader) {
-      return loader;
-    } else {
-      return <ActivityIndicator />;
-    }
+      </SafeAreaView>
+    );
+  };
+
+  render() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.props.launch}>
+        {this.renderContent()}
+      </Modal>
+    );
   }
 }
