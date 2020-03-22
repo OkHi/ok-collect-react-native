@@ -1,6 +1,10 @@
-import {OkHiUser, OkHiConfig, OkHiLocation, OkHiError, OkHiTheme} from './';
-import {ViewProps} from 'react-native';
-import {WebViewProps} from 'react-native-webview';
+import { OkHiUser } from './OkHiUser';
+import { OkHiConfig } from './OkHiConfig';
+import { OkHiLocation } from './OkHiLocation';
+import { OkHiError } from './OkHiError';
+import { OkHiTheme } from './OkHiTheme';
+import { ViewProps } from 'react-native';
+import { WebViewProps } from 'react-native-webview';
 
 export interface OkHiLocationManagerProps {
   auth: string;
