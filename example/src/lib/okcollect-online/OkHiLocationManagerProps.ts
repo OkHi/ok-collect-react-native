@@ -4,6 +4,7 @@ import {WebViewProps} from 'react-native-webview';
 
 export interface OkHiLocationManagerProps {
   auth: string;
+  mode?: number;
   user: OkHiUser;
   config?: OkHiConfig;
   theme?: OkHiTheme;
