@@ -6,4 +6,4 @@ export * from './OkHiLocation';
 export * from './OkHiError';
 export * from './OkHiLocationManagerProps';
 export * from './OkHiStyle';
-export * from './OkHiStyle';
+export * from './OkHiTheme';
