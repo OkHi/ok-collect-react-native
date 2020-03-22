@@ -21,6 +21,7 @@ import {
   OkHiLocation,
   OkHiError,
   OkHiTheme,
+  OkHiMode,
 } from '../../lib/okcollect-online';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
@@ -151,6 +152,7 @@ export default class HomeScreen extends React.Component<
     return (
       <OkHiLocationManager
         auth={auth}
+        mode={OkHiMode.DEV}
         user={user}
         theme={theme}
         config={config}
