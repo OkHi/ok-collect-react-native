@@ -16,11 +16,11 @@ import {request, PERMISSIONS} from 'react-native-permissions';
 import {
   OkHiLocationManager,
   OkHiUser,
-  OkHiStyle,
   OkHiConfig,
   OkHiAppBarConfiguration,
   OkHiLocation,
   OkHiError,
+  OkHiTheme,
 } from '../../lib/okcollect-online';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
@@ -129,24 +129,30 @@ export default class HomeScreen extends React.Component<
 
     const user: OkHiUser = this.user;
 
-    const style: OkHiStyle = {base: {color: '#37474F'}};
-
     const appBarConfig: OkHiAppBarConfiguration = {
       visible: true,
-      color: '#37474F',
-      logo:
-        'https://storage.googleapis.com/okhi-cdn/images/logos/okhi-logo-white.png',
     };
 
     const config: OkHiConfig = {streetView: true, appBar: appBarConfig};
 
     const safeAreaViewProps: ViewProps = {style: {backgroundColor: '#37474F'}};
 
+    const theme: OkHiTheme = {
+      appBar: {
+        backgroundColor: '#37474F',
+        logo:
+          'https://storage.googleapis.com/okhi-cdn/images/logos/okhi-logo-white.png',
+      },
+      colors: {
+        primary: '#37474F',
+      },
+    };
+
     return (
       <OkHiLocationManager
         auth={auth}
         user={user}
-        style={style}
+        theme={theme}
         config={config}
         launch={launchOkHi}
         loader={<Loader />}
