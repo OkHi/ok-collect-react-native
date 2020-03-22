@@ -1,4 +1,4 @@
-import {OkHiUser, OkHiConfig, OkHiStyle, OkHiLocation, OkHiError} from './';
+import {OkHiUser, OkHiConfig, OkHiLocation, OkHiError, OkHiTheme} from './';
 import {ViewProps} from 'react-native';
 import {WebViewProps} from 'react-native-webview';
 
@@ -6,7 +6,7 @@ export interface OkHiLocationManagerProps {
   auth: string;
   user: OkHiUser;
   config?: OkHiConfig;
-  style?: OkHiStyle;
+  theme?: OkHiTheme;
   loader?: JSX.Element;
   launch?: boolean;
   safeAreaViewProps?: ViewProps;
