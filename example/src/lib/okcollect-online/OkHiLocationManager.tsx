@@ -9,6 +9,7 @@ import {
   OkHiLocationManagerProps,
   OkHiStyle,
   OkHiTheme,
+  OkHiMode,
 } from './';
 
 interface OkHiLocationManagerStartPayload {
@@ -41,6 +42,13 @@ export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
   {loading: boolean; modalVisible: boolean}
 > {
+  private readonly DEV_URL =
+    'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
+  private readonly PROD_URL =
+    'https://api.okhi.io/v5/auth/mobile/generate-auth-token';
+  private readonly SANDBOX_URL =
+    'https://sandbox-api.okhi.io/v5/auth/mobile/generate-auth-token';
+  private readonly URL: string;
   private readonly user: OkHiUser;
   private readonly auth: string | null;
   private readonly config: OkHiConfig | null;
@@ -58,9 +66,24 @@ export class OkHiLocationManager extends React.Component<
 
   constructor(props: any) {
     super(props);
-    const {user, auth, config, onSuccess, onError, loader, theme} = this.props;
+    const {
+      user,
+      auth,
+      config,
+      onSuccess,
+      onError,
+      loader,
+      theme,
+      mode,
+    } = this.props;
     this.user = user;
     this.auth = auth || null;
+    this.URL =
+      mode && mode === OkHiMode.PROD
+        ? this.PROD_URL
+        : mode && mode === OkHiMode.DEV
+        ? this.DEV_URL
+        : this.SANDBOX_URL;
     this.config = config || null;
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
@@ -130,6 +153,23 @@ export class OkHiLocationManager extends React.Component<
         context,
       };
 
+      const isUserValid: {
+        valid: boolean;
+        formattedPhone?: string;
+      } = this.verifyPhoneNumber(
+        payload.user && payload.user.phone ? payload.user.phone : undefined,
+      );
+
+      if (!payload.user || !isUserValid.valid || !isUserValid.formattedPhone) {
+        throw new Error('invalid user');
+      } else {
+        payload.user.phone = isUserValid.formattedPhone;
+      }
+
+      if (!payload.auth || !payload.auth.authToken) {
+        throw new Error('invalid auth token');
+      }
+
       this.startPayload = {message, payload};
 
       this.jsBeforeLoad = `
@@ -155,11 +195,33 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
+  private verifyPhoneNumber = (phone = '') => {
+    const regex = /^\+[1-9]\d{6,14}$/;
+    let formattedPhone = phone.replace(/\s/g, '');
+    formattedPhone =
+      formattedPhone[0] === '+' ? formattedPhone : `+${formattedPhone}`;
+    const response = {valid: regex.test(formattedPhone)};
+    if (response.valid) {
+      return {
+        ...response,
+        formattedPhone,
+      };
+    }
+    return response;
+  };
+
   private handleInitError = (error: any) => {
-    if (error.toString().includes('token') && this.onError) {
+    const errorString = error.toString();
+    if (errorString.includes('token') && this.onError) {
       this.onError({
         code: 'invalid_auth_token',
         message: 'Unable to establish a secure connection with remote server',
+      });
+    } else if (errorString.includes('user') && this.onError) {
+      this.onError({
+        code: 'invalid_phone',
+        message:
+          'Invalid phone number. Please add your phone number using the + country code format eg. +25472317838',
       });
     } else if (this.onError) {
       this.onError({
@@ -171,17 +233,14 @@ export class OkHiLocationManager extends React.Component<
 
   private fetchAuthToken = async () => {
     try {
-      const response = await fetch(
-        'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token',
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Token ${this.auth}`,
-          },
+      const response = await fetch(this.URL, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Token ${this.auth}`,
         },
-      );
+      });
       if (response.status !== 200) {
         throw new Error('invalid auth token');
       }
