@@ -8,6 +8,7 @@ import {
   OkHiError,
   OkHiLocationManagerProps,
   OkHiStyle,
+  OkHiTheme,
 } from './';
 
 interface OkHiLocationManagerStartPayload {
@@ -43,7 +44,7 @@ export class OkHiLocationManager extends React.Component<
   private readonly user: OkHiUser;
   private readonly auth: string | null;
   private readonly config: OkHiConfig | null;
-  private readonly style: OkHiStyle | null;
+  private readonly theme: OkHiTheme | null;
   private readonly onSuccess:
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
@@ -57,11 +58,11 @@ export class OkHiLocationManager extends React.Component<
 
   constructor(props: any) {
     super(props);
-    const {user, auth, config, style, onSuccess, onError, loader} = this.props;
+    const {user, auth, config, onSuccess, onError, loader, theme} = this.props;
     this.user = user;
     this.auth = auth || null;
     this.config = config || null;
-    this.style = style || null;
+    this.theme = theme || null;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
     this.loader = loader || null;
@@ -78,28 +79,49 @@ export class OkHiLocationManager extends React.Component<
   private init = async () => {
     try {
       this.authToken = await this.fetchAuthToken();
+
       const message = 'select_location';
+
       const auth = this.authToken ? {authToken: this.authToken} : undefined;
+
       const user = this.user && this.user.phone ? this.user : undefined;
-      const style =
-        this.style && this.style.base
-          ? {
-              base: {
-                ...this.style.base,
-                logo:
-                  this.config && this.config.appBar && this.config.appBar.logo
-                    ? this.config.appBar.logo
-                    : undefined,
-              },
-            }
-          : undefined;
-      const config = this.config
-        ? {
-            streetView: this.config.streetView || false,
-            appBar: this.config.appBar || undefined,
-          }
-        : undefined;
+
+      const style = !this.theme
+        ? undefined
+        : {
+            base: {
+              color:
+                this.theme.colors && this.theme.colors.primary
+                  ? this.theme.colors.primary
+                  : undefined,
+              logo:
+                this.theme.appBar && this.theme.appBar.logo
+                  ? this.theme.appBar.logo
+                  : undefined,
+            },
+          };
+
+      const config = {
+        streetView:
+          this.config && typeof this.config.streetView === 'boolean'
+            ? this.config.streetView
+            : true,
+        appBar: {
+          visible:
+            this.config &&
+            this.config.appBar &&
+            typeof this.config.appBar.visible === 'boolean'
+              ? this.config.appBar.visible
+              : true,
+          color:
+            this.theme && this.theme.appBar && this.theme.appBar.backgroundColor
+              ? this.theme.appBar.backgroundColor
+              : undefined,
+        },
+      };
+
       const context = undefined;
+
       const payload = {
         auth,
         user,
@@ -107,7 +129,9 @@ export class OkHiLocationManager extends React.Component<
         config,
         context,
       };
+
       this.startPayload = {message, payload};
+
       this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
@@ -118,11 +142,13 @@ export class OkHiLocationManager extends React.Component<
       }
       true;
       `;
+
       this.jsAfterLoad = `
       window.startOkHiLocationManager({ 
         receiveMessage: function(data) { window.ReactNativeWebView.postMessage(data) } }, 
         ${JSON.stringify(this.startPayload)})
       `;
+
       this.setState({loading: false});
     } catch (error) {
       this.handleInitError(error);
