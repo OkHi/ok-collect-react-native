@@ -7,3 +7,4 @@ export * from './OkHiError';
 export * from './OkHiLocationManagerProps';
 export * from './OkHiStyle';
 export * from './OkHiTheme';
+export * from './OkHiMode';
