@@ -23,7 +23,8 @@
   ],
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-native": "^0.61.5"
+    "react-native": "^0.61.5",
+    "react-native-webview": "^9.0.1"
   },
   "husky": {
     "hooks": {
@@ -47,8 +48,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@okhi/types": "^1.0.2",
-    "react-native-webview": "^9.0.1"
+    "@okhi/types": "^1.0.2"
   },
   "repository": {
     "type": "git",
