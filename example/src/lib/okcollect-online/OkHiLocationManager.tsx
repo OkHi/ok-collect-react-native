@@ -6,10 +6,10 @@ import {
   OkHiUser,
   OkHiLocation,
   OkHiError,
-  OkHiLocationManagerProps,
-  OkHiStyle,
   OkHiTheme,
-} from './';
+} from '@okhi/types';
+import {OkHiLocationManagerProps} from './OkHiLocationManagerProps';
+import {OkHiStyle} from './OkHiStyle';
 
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
