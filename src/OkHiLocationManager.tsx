@@ -282,7 +282,7 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleFailure = () => {
+  private handleFailure = () => {
     if (this.onError) {
       this.onError({
         code: 'fatal_exit',
@@ -291,7 +291,7 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleSuccess = (response: any) => {
+  private handleSuccess = (response: any) => {
     let { user, location } = response.payload;
     user = {
       firstName: user.firstName || null,
@@ -329,13 +329,13 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleExit = () => {
+  private handleExit = () => {
     if (typeof this.props.onCloseRequest === 'function') {
       this.props.onCloseRequest();
     }
   };
 
-  handleOnMessage = (event: WebViewMessageEvent) => {
+  private handleOnMessage = (event: WebViewMessageEvent) => {
     try {
       const response: OkHiLocationManagerResponse = JSON.parse(
         event.nativeEvent.data
