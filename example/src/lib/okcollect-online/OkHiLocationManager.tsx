@@ -9,7 +9,6 @@ import {
   OkHiLocationManagerProps,
   OkHiStyle,
   OkHiTheme,
-  OkHiMode,
 } from './';
 
 interface OkHiLocationManagerStartPayload {
@@ -42,6 +41,10 @@ export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
   {loading: boolean; modalVisible: boolean}
 > {
+  private readonly LIB = {
+    name: 'ok-collect-online-react-native',
+    version: '1.0.2',
+  };
   private readonly DEV_URL =
     'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
   private readonly PROD_URL =
@@ -74,14 +77,14 @@ export class OkHiLocationManager extends React.Component<
       onError,
       loader,
       theme,
-      mode,
+      appContext,
     } = this.props;
     this.user = user;
     this.auth = auth || null;
     this.URL =
-      mode && mode === OkHiMode.PROD
+      appContext && appContext.mode && appContext.mode === 'prod'
         ? this.PROD_URL
-        : mode && mode === OkHiMode.DEV
+        : appContext.mode === 'dev'
         ? this.DEV_URL
         : this.SANDBOX_URL;
     this.config = config || null;
@@ -143,7 +146,29 @@ export class OkHiLocationManager extends React.Component<
         },
       };
 
-      const context = undefined;
+      const appContext = this.props.appContext || {};
+
+      const container =
+        appContext.app && appContext.app.name && appContext.app.version
+          ? appContext.app
+          : undefined;
+
+      const context = {
+        container,
+        developer: {
+          name:
+            appContext.developer && appContext.developer.name
+              ? appContext.developer.name
+              : 'external',
+        },
+        library: this.LIB,
+        platform: {
+          name:
+            appContext.platform && appContext.platform.name
+              ? appContext.platform.name
+              : 'hybrid',
+        },
+      };
 
       const payload = {
         auth,

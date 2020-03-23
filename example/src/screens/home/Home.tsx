@@ -22,6 +22,9 @@ import {
   OkHiError,
   OkHiTheme,
   OkHiMode,
+  OkHiAppContext,
+  OkHiPlatformType,
+  OkHiIntergrationType,
 } from '../../lib/okcollect-online';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
@@ -149,10 +152,17 @@ export default class HomeScreen extends React.Component<
       },
     };
 
+    const context: OkHiAppContext = {
+      app: {name: 'OkHi DemoApp', version: '1.0.0', build: 1},
+      mode: OkHiMode.DEV,
+      platform: {name: OkHiPlatformType.HYBRID},
+      developer: {name: OkHiIntergrationType.OKHI},
+    };
+
     return (
       <OkHiLocationManager
         auth={auth}
-        mode={OkHiMode.DEV}
+        appContext={context}
         user={user}
         theme={theme}
         config={config}

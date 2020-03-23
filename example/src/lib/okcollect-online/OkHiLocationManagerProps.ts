@@ -1,10 +1,17 @@
-import {OkHiUser, OkHiConfig, OkHiLocation, OkHiError, OkHiTheme} from './';
+import {
+  OkHiUser,
+  OkHiConfig,
+  OkHiLocation,
+  OkHiError,
+  OkHiTheme,
+  OkHiAppContext,
+} from './';
 import {ViewProps} from 'react-native';
 import {WebViewProps} from 'react-native-webview';
 
 export interface OkHiLocationManagerProps {
   auth: string;
-  mode?: number;
+  appContext: OkHiAppContext;
   user: OkHiUser;
   config?: OkHiConfig;
   theme?: OkHiTheme;
