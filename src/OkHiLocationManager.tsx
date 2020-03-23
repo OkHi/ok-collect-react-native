@@ -8,10 +8,31 @@ import {
   OkHiLocation,
   OkHiError,
 } from '@okhi/types';
-import {
-  OkHiLocationManagerProps,
-  OkHiLocationManagerStartPayload,
-} from './index';
+import { OkHiLocationManagerProps } from './index';
+
+interface OkHiStyle {
+  base?: {
+    color?: string;
+    name?: string;
+    [key: string]: any;
+  };
+}
+
+interface OkHiLocationManagerStartPayload {
+  message: 'select_location' | 'start_app';
+  payload: {
+    user?: OkHiUser;
+    auth?: {
+      authToken: string;
+    };
+    style?: OkHiStyle;
+    context?: any;
+    config?: {
+      streetView: boolean;
+      [key: string]: any;
+    };
+  };
+}
 
 interface OkHiLocationManagerResponse {
   message:
@@ -46,8 +67,6 @@ export class OkHiLocationManager extends React.Component<
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
   private readonly onError: ((error: OkHiError) => any) | null;
-  private readonly loader: JSX.Element | null;
-
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
   private authToken: string | null;
@@ -61,7 +80,6 @@ export class OkHiLocationManager extends React.Component<
       config,
       onSuccess,
       onError,
-      loader,
       theme,
       appContext,
     } = this.props;
@@ -77,7 +95,6 @@ export class OkHiLocationManager extends React.Component<
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    this.loader = loader || null;
     this.authToken = null;
     this.startPayload = null;
     this.jsBeforeLoad = null;
