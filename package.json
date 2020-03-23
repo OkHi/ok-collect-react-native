@@ -21,7 +21,10 @@
     "okcollect",
     "location manager"
   ],
-  "peerDependencies": {},
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-native": "^0.61.5"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -45,8 +48,6 @@
   },
   "dependencies": {
     "@okhi/types": "^1.0.2",
-    "react": "^16.13.1",
-    "react-native": "^0.61.5",
     "react-native-webview": "^9.0.1"
   },
   "repository": {
