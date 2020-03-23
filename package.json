@@ -1,6 +1,9 @@
 {
-  "version": "0.1.0",
+  "name": "@okhi/okcollect-manager-react-native",
+  "author": "Julius Kiano",
+  "version": "1.0.2",
   "license": "MIT",
+  "private": false,
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -13,7 +16,15 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build"
   },
-  "peerDependencies": {},
+  "keywords": [
+    "okhi",
+    "okcollect",
+    "location manager"
+  ],
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-native": "^0.61.5"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -25,14 +36,26 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "ok-collect-online-react-native",
-  "author": "Julius Kiano",
   "module": "dist/ok-collect-online-react-native.esm.js",
   "devDependencies": {
     "@types/jest": "^25.1.4",
+    "@types/react": "^16.9.25",
+    "@types/react-native": "^0.61.23",
     "husky": "^4.2.3",
     "tsdx": "^0.12.3",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
-  }
+  },
+  "dependencies": {
+    "@okhi/types": "^1.0.2",
+    "react-native-webview": "^9.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OkHi/ok-collect-online-react-native"
+  },
+  "bugs": {
+    "url": "https://github.com/OkHi/ok-collect-online-react-native/issues"
+  },
+  "homepage": "https://github.com/OkHi/ok-collect-online-react-native#readme"
 }

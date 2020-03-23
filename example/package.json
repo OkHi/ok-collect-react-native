@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "OkHiVaaS",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,11 +7,27 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/src/main/res && cd android/ && ./gradlew assembleDebug && cd .."
   },
   "dependencies": {
+    "@okhi/types": "^1.0.2",
+    "@react-native-community/async-storage": "^1.8.1",
+    "@react-native-community/masked-view": "^0.1.7",
+    "@react-native-firebase/app": "^6.3.4",
+    "@react-navigation/native": "^5.1.0",
+    "@react-navigation/stack": "^5.2.1",
+    "@types/styled-components": "^5.0.1",
+    "native-base": "^2.13.12",
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "react-native-gesture-handler": "^1.6.0",
+    "react-native-permissions": "^2.0.10",
+    "react-native-reanimated": "^1.7.0",
+    "react-native-safe-area-context": "^0.7.3",
+    "react-native-screens": "^2.3.0",
+    "react-native-webview": "^9.0.1",
+    "styled-components": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

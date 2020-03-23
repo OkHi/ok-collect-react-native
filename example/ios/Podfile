@@ -1,8 +1,12 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'example' do
-  # Pods for example
+target 'OkHiVaaS' do
+  # Pods for OkHiVaaS
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -34,7 +38,7 @@ target 'example' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'exampleTests' do
+  target 'OkHiVaaSTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -42,10 +46,10 @@ target 'example' do
   use_native_modules!
 end
 
-target 'example-tvOS' do
-  # Pods for example-tvOS
+target 'OkHiVaaS-tvOS' do
+  # Pods for OkHiVaaS-tvOS
 
-  target 'example-tvOSTests' do
+  target 'OkHiVaaS-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
