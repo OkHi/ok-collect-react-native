@@ -1,15 +1,22 @@
 import React from 'react';
-import {WebView, WebViewMessageEvent} from 'react-native-webview';
-import {ActivityIndicator, Platform, Modal, SafeAreaView} from 'react-native';
+import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import {
-  OkHiConfig,
   OkHiUser,
+  OkHiConfig,
+  OkHiTheme,
   OkHiLocation,
   OkHiError,
-  OkHiTheme,
 } from '@okhi/types';
-import {OkHiLocationManagerProps} from './OkHiLocationManagerProps';
-import {OkHiStyle} from './OkHiStyle';
+import { OkHiLocationManagerProps } from './index';
+
+interface OkHiStyle {
+  base?: {
+    color?: string;
+    name?: string;
+    [key: string]: any;
+  };
+}
 
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
@@ -34,12 +41,12 @@ interface OkHiLocationManagerResponse {
     | 'location_updated'
     | 'exit_app'
     | 'fatal_exit';
-  response: string | {user: any; location: any} | string;
+  response: string | { user: any; location: any } | string;
 }
 
 export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
-  {loading: boolean; modalVisible: boolean}
+  { loading: boolean; modalVisible: boolean }
 > {
   private readonly LIB = {
     name: 'ok-collect-online-react-native',
@@ -60,8 +67,6 @@ export class OkHiLocationManager extends React.Component<
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
   private readonly onError: ((error: OkHiError) => any) | null;
-  private readonly loader: JSX.Element | null;
-
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
   private authToken: string | null;
@@ -75,7 +80,6 @@ export class OkHiLocationManager extends React.Component<
       config,
       onSuccess,
       onError,
-      loader,
       theme,
       appContext,
     } = this.props;
@@ -91,7 +95,6 @@ export class OkHiLocationManager extends React.Component<
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    this.loader = loader || null;
     this.authToken = null;
     this.startPayload = null;
     this.jsBeforeLoad = null;
@@ -108,7 +111,7 @@ export class OkHiLocationManager extends React.Component<
 
       const message = 'select_location';
 
-      const auth = this.authToken ? {authToken: this.authToken} : undefined;
+      const auth = this.authToken ? { authToken: this.authToken } : undefined;
 
       const user = this.user && this.user.phone ? this.user : undefined;
 
@@ -182,7 +185,7 @@ export class OkHiLocationManager extends React.Component<
         valid: boolean;
         formattedPhone?: string;
       } = this.verifyPhoneNumber(
-        payload.user && payload.user.phone ? payload.user.phone : undefined,
+        payload.user && payload.user.phone ? payload.user.phone : undefined
       );
 
       if (!payload.user || !isUserValid.valid || !isUserValid.formattedPhone) {
@@ -195,7 +198,7 @@ export class OkHiLocationManager extends React.Component<
         throw new Error('invalid auth token');
       }
 
-      this.startPayload = {message, payload};
+      this.startPayload = { message, payload };
 
       this.jsBeforeLoad = `
       window.isNativeApp = true;
@@ -214,7 +217,7 @@ export class OkHiLocationManager extends React.Component<
         ${JSON.stringify(this.startPayload)})
       `;
 
-      this.setState({loading: false});
+      this.setState({ loading: false });
     } catch (error) {
       this.handleInitError(error);
     }
@@ -225,7 +228,7 @@ export class OkHiLocationManager extends React.Component<
     let formattedPhone = phone.replace(/\s/g, '');
     formattedPhone =
       formattedPhone[0] === '+' ? formattedPhone : `+${formattedPhone}`;
-    const response = {valid: regex.test(formattedPhone)};
+    const response = { valid: regex.test(formattedPhone) };
     if (response.valid) {
       return {
         ...response,
@@ -269,7 +272,7 @@ export class OkHiLocationManager extends React.Component<
       if (response.status !== 200) {
         throw new Error('invalid auth token');
       }
-      const data: {authorization_token: string} = await response.json();
+      const data: { authorization_token: string } = await response.json();
       if (!data.authorization_token) {
         throw new Error('authorization_token not provided');
       }
@@ -279,7 +282,7 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleFailure = () => {
+  private handleFailure = () => {
     if (this.onError) {
       this.onError({
         code: 'fatal_exit',
@@ -288,8 +291,8 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleSuccess = (response: any) => {
-    let {user, location} = response.payload;
+  private handleSuccess = (response: any) => {
+    let { user, location } = response.payload;
     user = {
       firstName: user.firstName || null,
       lastName: user.lastName || null,
@@ -300,7 +303,7 @@ export class OkHiLocationManager extends React.Component<
       id: location.id || null,
       geoPoint:
         location.geo_point && location.geo_point.lat && location.geo_point.lon
-          ? {lat: location.geo_point.lat, lon: location.geo_point.lon}
+          ? { lat: location.geo_point.lat, lon: location.geo_point.lon }
           : null,
       createdAt: location.created_at || null,
       userId: location.user_id || null,
@@ -326,16 +329,16 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleExit = () => {
+  private handleExit = () => {
     if (typeof this.props.onCloseRequest === 'function') {
       this.props.onCloseRequest();
     }
   };
 
-  handleOnMessage = (event: WebViewMessageEvent) => {
+  private handleOnMessage = (event: WebViewMessageEvent) => {
     try {
       const response: OkHiLocationManagerResponse = JSON.parse(
-        event.nativeEvent.data,
+        event.nativeEvent.data
       );
       if (response.message === 'fatal_exit') {
         this.handleFailure();
@@ -369,7 +372,7 @@ export class OkHiLocationManager extends React.Component<
 
     const safeAreaViewProps = this.props.safeAreaViewProps || {};
     const webviewProps = this.props.webviewProps || {};
-    const defaultSafeAreaViewStyles = {flex: 1};
+    const defaultSafeAreaViewStyles = { flex: 1 };
     const safeAreaViewStyles: {} =
       safeAreaViewProps && safeAreaViewProps.style
         ? safeAreaViewProps.style
@@ -378,10 +381,11 @@ export class OkHiLocationManager extends React.Component<
     return (
       <SafeAreaView
         {...safeAreaViewProps}
-        style={{...safeAreaViewStyles, ...defaultSafeAreaViewStyles}}>
+        style={{ ...safeAreaViewStyles, ...defaultSafeAreaViewStyles }}
+      >
         <WebView
           {...webviewProps}
-          source={{uri: 'https://dev-manager-v5.okhi.io'}}
+          source={{ uri: 'https://dev-manager-v5.okhi.io' }}
           injectedJavaScriptBeforeContentLoaded={
             Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
           }
@@ -399,7 +403,8 @@ export class OkHiLocationManager extends React.Component<
       <Modal
         animationType="slide"
         transparent={false}
-        visible={this.props.launch}>
+        visible={this.props.launch}
+      >
         {this.renderContent()}
       </Modal>
     );
