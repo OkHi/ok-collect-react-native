@@ -26,3 +26,5 @@ export interface OkHiLocationManagerProps {
 }
 
 export default OkHiLocationManager;
+
+export * from '@okhi/types';
