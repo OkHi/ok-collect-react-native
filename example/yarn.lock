@@ -884,6 +884,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@okhi/types@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@okhi/types/-/types-1.0.2.tgz#c608dc2147a2bf105670d9992264572c2043ded5"
+  integrity sha512-Lfptj37OHr4tcFW0Q0YFLzOPIaqmQNF7QK+Ux+k5qkKWdhChwoCnAWHX13gB2bnlkbUgF+8zvV4ocU5/tzMLfQ==
+
 "@react-native-community/async-storage@^1.8.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.8.1.tgz#c93e69dcf948667b207e409b8039b7edf199159b"
