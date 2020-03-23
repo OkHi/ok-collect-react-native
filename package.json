@@ -10,10 +10,10 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsdx watch -i ./example/src/lib/index.ts",
-    "build": "tsdx build -i ./example/src/lib/index.ts",
-    "lint": "tsdx lint -i ./example/src/lib/index.ts",
-    "prepare": "tsdx build -i ./example/src/lib/index.ts",
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
     "test": "tsdx test"
   },
   "keywords": [
