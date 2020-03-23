@@ -10,6 +10,8 @@ import { ViewProps } from 'react-native';
 import { WebViewProps } from 'react-native-webview';
 import { OkHiLocationManager } from './OkHiLocationManager';
 
+export * from '@okhi/types';
+
 export interface OkHiLocationManagerProps {
   auth: string;
   appContext: OkHiAppContext;
