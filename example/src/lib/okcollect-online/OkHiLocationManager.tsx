@@ -1,15 +1,22 @@
 import React from 'react';
+import {ActivityIndicator, SafeAreaView, Modal, Platform} from 'react-native';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
-import {ActivityIndicator, Platform, Modal, SafeAreaView} from 'react-native';
 import {
-  OkHiConfig,
   OkHiUser,
+  OkHiConfig,
+  OkHiTheme,
   OkHiLocation,
   OkHiError,
-  OkHiTheme,
 } from '@okhi/types';
-import {OkHiLocationManagerProps} from './OkHiLocationManagerProps';
-import {OkHiStyle} from './OkHiStyle';
+import {OkHiLocationManagerProps} from './index';
+
+interface OkHiStyle {
+  base?: {
+    color?: string;
+    name?: string;
+    [key: string]: any;
+  };
+}
 
 interface OkHiLocationManagerStartPayload {
   message: 'select_location' | 'start_app';
@@ -45,13 +52,17 @@ export class OkHiLocationManager extends React.Component<
     name: 'ok-collect-online-react-native',
     version: '1.0.2',
   };
-  private readonly DEV_URL =
+  private readonly DEV_AUTH_URL =
     'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly PROD_URL =
+  private readonly PROD_AUTH_URL =
     'https://api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly SANDBOX_URL =
+  private readonly SANDBOX_AUTH_URL =
     'https://sandbox-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly URL: string;
+  private readonly DEV_FRAME_URL = 'https://dev-manager-v5.okhi.io';
+  private readonly PROD_FRAME_URL = 'https://manager-v5.okhi.io';
+  private readonly SANDBOX_FRAME_URL = 'https://sandbox-manager-v5.okhi.io';
+  private readonly FRAME_URL: string;
+  private readonly AUTHORIZATION_URL: string;
   private readonly user: OkHiUser;
   private readonly auth: string | null;
   private readonly config: OkHiConfig | null;
@@ -60,8 +71,6 @@ export class OkHiLocationManager extends React.Component<
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
   private readonly onError: ((error: OkHiError) => any) | null;
-  private readonly loader: JSX.Element | null;
-
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
   private authToken: string | null;
@@ -75,23 +84,27 @@ export class OkHiLocationManager extends React.Component<
       config,
       onSuccess,
       onError,
-      loader,
       theme,
       appContext,
     } = this.props;
     this.user = user;
     this.auth = auth || null;
-    this.URL =
-      appContext && appContext.mode && appContext.mode === 'prod'
-        ? this.PROD_URL
-        : appContext.mode === 'dev'
-        ? this.DEV_URL
-        : this.SANDBOX_URL;
+    this.AUTHORIZATION_URL =
+      !appContext || !appContext.mode
+        ? this.SANDBOX_AUTH_URL
+        : appContext.mode === 'prod'
+        ? this.PROD_AUTH_URL
+        : this.DEV_AUTH_URL;
+    this.FRAME_URL =
+      !appContext || !appContext.mode
+        ? this.SANDBOX_FRAME_URL
+        : appContext.mode === 'prod'
+        ? this.PROD_FRAME_URL
+        : this.DEV_FRAME_URL;
     this.config = config || null;
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    this.loader = loader || null;
     this.authToken = null;
     this.startPayload = null;
     this.jsBeforeLoad = null;
@@ -258,7 +271,7 @@ export class OkHiLocationManager extends React.Component<
 
   private fetchAuthToken = async () => {
     try {
-      const response = await fetch(this.URL, {
+      const response = await fetch(this.AUTHORIZATION_URL, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -279,7 +292,7 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleFailure = () => {
+  private handleFailure = () => {
     if (this.onError) {
       this.onError({
         code: 'fatal_exit',
@@ -288,7 +301,7 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleSuccess = (response: any) => {
+  private handleSuccess = (response: any) => {
     let {user, location} = response.payload;
     user = {
       firstName: user.firstName || null,
@@ -326,13 +339,13 @@ export class OkHiLocationManager extends React.Component<
     }
   };
 
-  handleExit = () => {
+  private handleExit = () => {
     if (typeof this.props.onCloseRequest === 'function') {
       this.props.onCloseRequest();
     }
   };
 
-  handleOnMessage = (event: WebViewMessageEvent) => {
+  private handleOnMessage = (event: WebViewMessageEvent) => {
     try {
       const response: OkHiLocationManagerResponse = JSON.parse(
         event.nativeEvent.data,
@@ -381,7 +394,7 @@ export class OkHiLocationManager extends React.Component<
         style={{...safeAreaViewStyles, ...defaultSafeAreaViewStyles}}>
         <WebView
           {...webviewProps}
-          source={{uri: 'https://dev-manager-v5.okhi.io'}}
+          source={{uri: this.FRAME_URL}}
           injectedJavaScriptBeforeContentLoaded={
             Platform.OS === 'ios' ? this.jsBeforeLoad : undefined
           }

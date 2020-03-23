@@ -13,8 +13,7 @@ import {Container, Fab, Icon} from 'native-base';
 import {Toast} from 'native-base';
 import {NavigationProp} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
-import {
-  OkHiLocationManager,
+import OkHiLocationManager, {
   OkHiUser,
   OkHiConfig,
   OkHiAppBarConfiguration,
