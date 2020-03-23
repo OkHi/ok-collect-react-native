@@ -86,11 +86,11 @@ export class OkHiLocationManager extends React.Component<
     this.user = user;
     this.auth = auth || null;
     this.URL =
-      appContext && appContext.mode && appContext.mode === 'prod'
+      !appContext || !appContext.mode
+        ? this.SANDBOX_URL
+        : appContext.mode === 'prod'
         ? this.PROD_URL
-        : appContext.mode === 'dev'
-        ? this.DEV_URL
-        : this.SANDBOX_URL;
+        : this.DEV_URL;
     this.config = config || null;
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
