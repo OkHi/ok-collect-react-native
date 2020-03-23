@@ -10,11 +10,11 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build"
+    "start": "tsdx watch -i ./example/src/lib/index.ts",
+    "build": "tsdx build -i ./example/src/lib/index.ts",
+    "lint": "tsdx lint -i ./example/src/lib/index.ts",
+    "prepare": "tsdx build -i ./example/src/lib/index.ts",
+    "test": "tsdx test"
   },
   "keywords": [
     "okhi",
