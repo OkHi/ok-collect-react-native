@@ -1,7 +1,7 @@
 {
   "name": "@okhi/okcollect-manager-react-native",
   "author": "Julius Kiano",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "private": false,
   "main": "dist/index.js",
