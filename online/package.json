@@ -52,10 +52,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/OkHi/ok-collect-online-react-native"
+    "url": "https://github.com/OkHi/ok-collect-react-native/online"
   },
   "bugs": {
-    "url": "https://github.com/OkHi/ok-collect-online-react-native/issues"
+    "url": "https://github.com/OkHi/ok-collect-react-native/issues"
   },
-  "homepage": "https://github.com/OkHi/ok-collect-online-react-native#readme"
+  "homepage": "https://github.com/OkHi/ok-collect-react-native/online#readme"
 }
