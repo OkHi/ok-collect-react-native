@@ -1,3 +1,0 @@
-#@okhi/@okhi/okcollect-manager-react-native
-
-To be documented...
