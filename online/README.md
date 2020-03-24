@@ -1,3 +1,3 @@
-#@okhi/@okhi/okcollect-manager-react-native
+# @okhi/okcollect-manager-react-native
 
 To be documented...
