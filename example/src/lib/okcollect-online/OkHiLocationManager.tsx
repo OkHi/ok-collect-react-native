@@ -94,7 +94,7 @@ export class OkHiLocationManager extends React.Component<
 
   private init = async () => {
     try {
-      this.authToken = await OkHi.fetchAuthToken();
+      this.authToken = await OkHi.fetchAuthorizationToken();
 
       const message = 'select_location';
 
