@@ -1,14 +1,13 @@
 import React from 'react';
 import {ActivityIndicator, SafeAreaView, Modal, Platform} from 'react-native';
 import {WebView, WebViewMessageEvent} from 'react-native-webview';
+import {OkHiUser, OkHiLocation} from '@okhi/core';
 import {
-  OkHiUser,
-  OkHiConfig,
-  OkHiTheme,
-  OkHiLocation,
+  OkHiLocationManagerProps,
+  OkHiLocationManagerConfig,
+  OkHiLocationManagerTheme,
   OkHiError,
-} from '@okhi/types';
-import {OkHiLocationManagerProps} from './index';
+} from './index';
 
 interface OkHiStyle {
   base?: {
@@ -65,8 +64,8 @@ export class OkHiLocationManager extends React.Component<
   private readonly AUTHORIZATION_URL: string;
   private readonly user: OkHiUser;
   private readonly auth: string | null;
-  private readonly config: OkHiConfig | null;
-  private readonly theme: OkHiTheme | null;
+  private readonly config: OkHiLocationManagerConfig | null;
+  private readonly theme: OkHiLocationManagerTheme | null;
   private readonly onSuccess:
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
