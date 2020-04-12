@@ -14,7 +14,8 @@
     "build": "tsdx build",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
-    "test": "tsdx test"
+    "test": "tsdx test",
+    "postinstall": "yarn cache clean"
   },
   "keywords": [
     "okhi",
@@ -23,8 +24,7 @@
   ],
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-native": "^0.61.5",
-    "react-native-webview": "^9.0.1"
+    "react-native": "^0.61.5"
   },
   "husky": {
     "hooks": {
@@ -48,7 +48,8 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@okhi/types": "^1.0.2"
+    "react-native-webview": "^9.0.1",
+    "@okhi/core": "file:/Users/kiano/Documents/okhi/ok-core"
   },
   "repository": {
     "type": "git",
