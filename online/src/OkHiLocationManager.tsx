@@ -1,14 +1,18 @@
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import {
+import OkHi, {
   OkHiUser,
-  OkHiConfig,
-  OkHiTheme,
   OkHiLocation,
+  OkHiContext,
+  OkHiMode,
+} from '@okhi/core';
+import {
+  OkHiLocationManagerProps,
+  OkHiLocationManagerConfig,
+  OkHiLocationManagerTheme,
   OkHiError,
-} from '@okhi/types';
-import { OkHiLocationManagerProps } from './index';
+} from './index';
 
 interface OkHiStyle {
   base?: {
@@ -52,21 +56,13 @@ export class OkHiLocationManager extends React.Component<
     name: 'ok-collect-online-react-native',
     version: '1.0.2',
   };
-  private readonly DEV_AUTH_URL =
-    'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly PROD_AUTH_URL =
-    'https://api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly SANDBOX_AUTH_URL =
-    'https://sandbox-api.okhi.io/v5/auth/mobile/generate-auth-token';
   private readonly DEV_FRAME_URL = 'https://dev-manager-v5.okhi.io';
   private readonly PROD_FRAME_URL = 'https://manager-v5.okhi.io';
   private readonly SANDBOX_FRAME_URL = 'https://sandbox-manager-v5.okhi.io';
   private readonly FRAME_URL: string;
-  private readonly AUTHORIZATION_URL: string;
   private readonly user: OkHiUser;
-  private readonly auth: string | null;
-  private readonly config: OkHiConfig | null;
-  private readonly theme: OkHiTheme | null;
+  private readonly config: OkHiLocationManagerConfig | null;
+  private readonly theme: OkHiLocationManagerTheme | null;
   private readonly onSuccess:
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
@@ -78,27 +74,13 @@ export class OkHiLocationManager extends React.Component<
 
   constructor(props: any) {
     super(props);
-    const {
-      user,
-      auth,
-      config,
-      onSuccess,
-      onError,
-      theme,
-      appContext,
-    } = this.props;
+    const { user, config, onSuccess, onError, theme } = this.props;
+    const context = OkHi.fetchContext();
     this.user = user;
-    this.auth = auth || null;
-    this.AUTHORIZATION_URL =
-      !appContext || !appContext.mode
-        ? this.SANDBOX_AUTH_URL
-        : appContext.mode === 'prod'
-        ? this.PROD_AUTH_URL
-        : this.DEV_AUTH_URL;
     this.FRAME_URL =
-      !appContext || !appContext.mode
+      context && context.mode === OkHiMode.SANDBOX
         ? this.SANDBOX_FRAME_URL
-        : appContext.mode === 'prod'
+        : context && context.mode === OkHiMode.PROD
         ? this.PROD_FRAME_URL
         : this.DEV_FRAME_URL;
     this.config = config || null;
@@ -117,7 +99,7 @@ export class OkHiLocationManager extends React.Component<
 
   private init = async () => {
     try {
-      this.authToken = await this.fetchAuthToken();
+      this.authToken = await OkHi.fetchAuthorizationToken();
 
       const message = 'select_location';
 
@@ -159,28 +141,11 @@ export class OkHiLocationManager extends React.Component<
         },
       };
 
-      const appContext = this.props.appContext || {};
+      const okhiContext: OkHiContext = OkHi.fetchContext();
 
-      const container =
-        appContext.app && appContext.app.name && appContext.app.version
-          ? appContext.app
-          : undefined;
-
-      const context = {
-        container,
-        developer: {
-          name:
-            appContext.developer && appContext.developer.name
-              ? appContext.developer.name
-              : 'external',
-        },
+      const context: OkHiContext = {
+        ...okhiContext,
         library: this.LIB,
-        platform: {
-          name:
-            appContext.platform && appContext.platform.name
-              ? appContext.platform.name
-              : 'hybrid',
-        },
       };
 
       const payload = {
@@ -266,29 +231,6 @@ export class OkHiLocationManager extends React.Component<
         code: 'network_request_failed',
         message: 'Unable to establish a secure connection with remote server',
       });
-    }
-  };
-
-  private fetchAuthToken = async () => {
-    try {
-      const response = await fetch(this.AUTHORIZATION_URL, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Token ${this.auth}`,
-        },
-      });
-      if (response.status !== 200) {
-        throw new Error('invalid auth token');
-      }
-      const data: { authorization_token: string } = await response.json();
-      if (!data.authorization_token) {
-        throw new Error('authorization_token not provided');
-      }
-      return data.authorization_token;
-    } catch (error) {
-      throw error;
     }
   };
 
