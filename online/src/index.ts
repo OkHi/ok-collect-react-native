@@ -1,18 +1,9 @@
-import { OkHiUser, OkHiLocation, OkHiAppContext } from '@okhi/types';
+import { OkHiUser, OkHiLocation, OkHiError as OE } from '@okhi/core';
 import { ViewProps } from 'react-native';
 import { WebViewProps } from 'react-native-webview';
 import { OkHiLocationManager } from './OkHiLocationManager';
 
-export interface OkHiAppBarConfiguration {
-  visible?: boolean;
-}
-
-export interface OkHiConfig {
-  streetView?: boolean;
-  appBar?: OkHiAppBarConfiguration;
-}
-
-export interface OkHiError {
+export interface OkHiError extends OE {
   code:
     | 'invalid_auth_token'
     | 'fatal_exit'
@@ -22,7 +13,16 @@ export interface OkHiError {
   message: string;
 }
 
-export interface OkHiTheme {
+export interface OkHiLocationManagerAppBarConfiguration {
+  visible?: boolean;
+}
+
+export interface OkHiLocationManagerConfig {
+  streetView?: boolean;
+  appBar?: OkHiLocationManagerAppBarConfiguration;
+}
+
+export interface OkHiLocationManagerTheme {
   colors?: {
     primary: string;
   };
@@ -33,11 +33,9 @@ export interface OkHiTheme {
 }
 
 export interface OkHiLocationManagerProps {
-  auth: string;
-  appContext: OkHiAppContext;
   user: OkHiUser;
-  config?: OkHiConfig;
-  theme?: OkHiTheme;
+  config?: OkHiLocationManagerConfig;
+  theme?: OkHiLocationManagerTheme;
   loader?: JSX.Element;
   launch?: boolean;
   safeAreaViewProps?: ViewProps;
