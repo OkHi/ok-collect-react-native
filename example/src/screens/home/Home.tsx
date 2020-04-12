@@ -14,17 +14,19 @@ import {Toast} from 'native-base';
 import {NavigationProp} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import OkHiLocationManager, {
-  OkHiUser,
-  OkHiConfig,
-  OkHiAppBarConfiguration,
-  OkHiLocation,
+  OkHiLocationManagerConfig,
+  OkHiLocationManagerAppBarConfiguration,
   OkHiError,
-  OkHiTheme,
+  OkHiLocationManagerTheme,
+} from '../../lib/okcollect-online';
+import {
+  OkHiUser,
+  OkHiLocation,
   OkHiMode,
   OkHiAppContext,
   OkHiPlatformType,
   OkHiIntergrationType,
-} from '../../lib/okcollect-online';
+} from '@okhi/core';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
 
@@ -132,15 +134,18 @@ export default class HomeScreen extends React.Component<
 
     const user: OkHiUser = this.user;
 
-    const appBarConfig: OkHiAppBarConfiguration = {
+    const appBarConfig: OkHiLocationManagerAppBarConfiguration = {
       visible: true,
     };
 
-    const config: OkHiConfig = {streetView: true, appBar: appBarConfig};
+    const config: OkHiLocationManagerConfig = {
+      streetView: true,
+      appBar: appBarConfig,
+    };
 
     const safeAreaViewProps: ViewProps = {style: {backgroundColor: '#37474F'}};
 
-    const theme: OkHiTheme = {
+    const theme: OkHiLocationManagerTheme = {
       appBar: {
         backgroundColor: '#37474F',
         logo:
@@ -155,7 +160,7 @@ export default class HomeScreen extends React.Component<
       app: {name: 'OkHi DemoApp', version: '1.0.0', build: 1},
       mode: OkHiMode.DEV,
       platform: {name: OkHiPlatformType.HYBRID},
-      developer: {name: OkHiIntergrationType.OKHI},
+      developer: {name: OkHiIntergrationType.OKHI as 'okhi'},
     };
 
     return (
