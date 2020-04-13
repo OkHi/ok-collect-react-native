@@ -1,4 +1,5 @@
 import React from 'react';
+import manifest from '../package.json';
 import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import OkHiCore, {
@@ -55,8 +56,8 @@ export class OkHiLocationManager extends React.Component<
   { loading: boolean; modalVisible: boolean }
 > {
   private readonly LIB = {
-    name: 'ok-collect-online-react-native',
-    version: '1.0.2',
+    name: manifest.name,
+    version: manifest.version,
   };
   private readonly DEV_FRAME_URL = 'https://dev-manager-v5.okhi.io';
   private readonly PROD_FRAME_URL = 'https://manager-v5.okhi.io';
