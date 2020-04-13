@@ -959,6 +959,11 @@
   dependencies:
     axios "^0.19.2"
 
+"@okhi/core@file:/Users/kiano/Documents/okhi/ok-core":
+  version "1.0.0"
+  dependencies:
+    axios "^0.19.2"
+
 "@rollup/plugin-commonjs@^11.0.0":
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-11.0.2.tgz#837cc6950752327cb90177b608f0928a4e60b582"

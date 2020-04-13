@@ -23,6 +23,7 @@
     "location manager"
   ],
   "peerDependencies": {
+    "@okhi/core": "file:/Users/kiano/Documents/okhi/ok-core",
     "react": "^16.13.1",
     "react-native": "^0.61.5"
   },
@@ -48,8 +49,8 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "react-native-webview": "^9.0.1",
-    "@okhi/core": "file:/Users/kiano/Documents/okhi/ok-core"
+    "@okhi/core": "file:/Users/kiano/Documents/okhi/ok-core",
+    "react-native-webview": "^9.0.1"
   },
   "repository": {
     "type": "git",
