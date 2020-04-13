@@ -1,17 +1,19 @@
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import OkHi, {
+import OkHiCore, {
   OkHiUser,
   OkHiLocation,
   OkHiContext,
   OkHiMode,
+  OkHiException,
+  OkHiErrorCodes,
+  OkHiErrorMessages,
 } from '@okhi/core';
 import {
   OkHiLocationManagerProps,
   OkHiLocationManagerConfig,
   OkHiLocationManagerTheme,
-  OkHiError,
 } from './index';
 
 interface OkHiStyle {
@@ -66,7 +68,8 @@ export class OkHiLocationManager extends React.Component<
   private readonly onSuccess:
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
-  private readonly onError: ((error: OkHiError) => any) | null;
+  private readonly onError: ((error: OkHiException) => any) | null;
+  private readonly core: OkHiCore;
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
   private authToken: string | null;
@@ -74,8 +77,10 @@ export class OkHiLocationManager extends React.Component<
 
   constructor(props: any) {
     super(props);
-    const { user, config, onSuccess, onError, theme } = this.props;
-    const context = OkHi.fetchContext();
+    const { user, config, onSuccess, onError, theme, core } = this.props;
+    const context = core.fetchOkHiContext();
+    this.core = core;
+    this.core = core;
     this.user = user;
     this.FRAME_URL =
       context && context.mode === OkHiMode.SANDBOX
@@ -99,7 +104,7 @@ export class OkHiLocationManager extends React.Component<
 
   private init = async () => {
     try {
-      this.authToken = await OkHi.fetchAuthorizationToken();
+      this.authToken = await this.core.fetchAuthorizationToken();
 
       const message = 'select_location';
 
@@ -141,7 +146,7 @@ export class OkHiLocationManager extends React.Component<
         },
       };
 
-      const okhiContext: OkHiContext = OkHi.fetchContext();
+      const okhiContext: OkHiContext = this.core.fetchOkHiContext();
 
       const context: OkHiContext = {
         ...okhiContext,
@@ -163,17 +168,34 @@ export class OkHiLocationManager extends React.Component<
         payload.user && payload.user.phone ? payload.user.phone : undefined
       );
 
-      if (!payload.user || !isUserValid.valid || !isUserValid.formattedPhone) {
-        throw new Error('invalid user');
-      } else {
+      if (!payload.auth || !payload.auth.authToken) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.unauthorized,
+          message: OkHiErrorMessages.unauthorized,
+        });
+      }
+
+      if (!payload.user) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.invalid_configuration,
+          message: OkHiErrorMessages.invalid_configuration,
+        });
+      }
+
+      if (!isUserValid.valid) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.invalid_phone,
+          message: OkHiErrorMessages.invalid_phone,
+        });
+      }
+
+      if (isUserValid.formattedPhone) {
         payload.user.phone = isUserValid.formattedPhone;
       }
 
-      if (!payload.auth || !payload.auth.authToken) {
-        throw new Error('invalid auth token');
-      }
-
       this.startPayload = { message, payload };
+
+      console.log(this.startPayload);
 
       this.jsBeforeLoad = `
       window.isNativeApp = true;
@@ -213,33 +235,27 @@ export class OkHiLocationManager extends React.Component<
     return response;
   };
 
-  private handleInitError = (error: any) => {
-    const errorString = error.toString();
-    if (errorString.includes('token') && this.onError) {
-      this.onError({
-        code: 'invalid_auth_token',
-        message: 'Unable to establish a secure connection with remote server',
-      });
-    } else if (errorString.includes('user') && this.onError) {
-      this.onError({
-        code: 'invalid_phone',
-        message:
-          'Invalid phone number. Please add your phone number using the + country code format eg. +25472317838',
-      });
+  private handleInitError = (error: OkHiException) => {
+    if (error.code && error.message && this.onError) {
+      this.onError(error);
     } else if (this.onError) {
-      this.onError({
-        code: 'network_request_failed',
-        message: 'Unable to establish a secure connection with remote server',
-      });
+      this.onError(
+        new OkHiException({
+          code: OkHiErrorCodes.network_error,
+          message: OkHiErrorMessages.network_error,
+        })
+      );
     }
   };
 
   private handleFailure = () => {
     if (this.onError) {
-      this.onError({
-        code: 'fatal_exit',
-        message: 'Something went wrong during the address creation process',
-      });
+      this.onError(
+        new OkHiException({
+          code: OkHiErrorCodes.unknown_error,
+          message: OkHiErrorMessages.unknown_error,
+        })
+      );
     }
   };
 
@@ -301,10 +317,12 @@ export class OkHiLocationManager extends React.Component<
       }
     } catch (error) {
       if (this.onError) {
-        this.onError({
-          code: 'invalid_response',
-          message: 'Invalid response received',
-        });
+        this.onError(
+          new OkHiException({
+            code: OkHiErrorCodes.unknown_error,
+            message: OkHiErrorMessages.unknown_error,
+          })
+        );
       }
     }
   };
