@@ -195,8 +195,6 @@ export class OkHiLocationManager extends React.Component<
 
       this.startPayload = { message, payload };
 
-      console.log(this.startPayload);
-
       this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
