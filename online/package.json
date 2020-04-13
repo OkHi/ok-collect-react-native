@@ -1,7 +1,7 @@
 {
   "name": "@okhi/okcollect-manager-react-native",
   "author": "Julius Kiano",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "license": "MIT",
   "private": false,
   "main": "dist/index.js",
@@ -14,7 +14,8 @@
     "build": "tsdx build",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
-    "test": "tsdx test"
+    "test": "tsdx test",
+    "postinstall": "yarn cache clean"
   },
   "keywords": [
     "okhi",
@@ -23,8 +24,7 @@
   ],
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-native": "^0.61.5",
-    "react-native-webview": "^9.0.1"
+    "react-native": "^0.61.5"
   },
   "husky": {
     "hooks": {
@@ -48,7 +48,8 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@okhi/types": "^1.0.2"
+    "@okhi/core": "^1.0.0",
+    "react-native-webview": "^9.0.1"
   },
   "repository": {
     "type": "git",

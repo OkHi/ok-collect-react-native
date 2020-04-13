@@ -3,12 +3,12 @@ import {Root} from 'native-base';
 import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {OkHiLocation} from '@okhi/core';
 import Repo from './services/repository';
 import AppLoading from './components/AppLoading';
 import HeaderImage from './components/HeaderImage';
 import HomeScreen from './screens/home/Home';
 import LoginScreen from './screens/login/Login';
-import {OkHiLocation} from './lib/okcollect-online';
 import {Store, User} from './interfaces';
 
 const Stack = createStackNavigator();
