@@ -1,4 +1,4 @@
-import {OkHiLocation} from './lib/okcollect-online';
+import {OkHiLocation} from '@okhi/core';
 
 export interface User {
   firstName?: string;

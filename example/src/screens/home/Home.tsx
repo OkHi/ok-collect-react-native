@@ -14,17 +14,12 @@ import {Toast} from 'native-base';
 import {NavigationProp} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import OkHiLocationManager, {
-  OkHiUser,
-  OkHiConfig,
-  OkHiAppBarConfiguration,
-  OkHiLocation,
-  OkHiError,
-  OkHiTheme,
-  OkHiMode,
-  OkHiAppContext,
-  OkHiPlatformType,
-  OkHiIntergrationType,
-} from '../../lib/okcollect-online';
+  OkHiLocationManagerConfig,
+  OkHiLocationManagerAppBarConfiguration,
+  OkHiLocationManagerTheme,
+} from '@okhi/okcollect-manager-react-native';
+import {OkHiUser, OkHiLocation, OkHiException} from '@okhi/core';
+import core from '../../services/OkHiCore';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
 
@@ -57,6 +52,7 @@ export default class HomeScreen extends React.Component<
     this.state = {
       launchOkHi: false,
     };
+    // console.log(OkHi.fetchContext());
   }
 
   handleFabPress = async () => {
@@ -90,7 +86,7 @@ export default class HomeScreen extends React.Component<
     });
   };
 
-  handleError = (error: OkHiError) => {
+  handleError = (error: OkHiException) => {
     this.setState({launchOkHi: false});
     if (error.code === 'network_request_failed') {
       Toast.show({
@@ -127,20 +123,20 @@ export default class HomeScreen extends React.Component<
   renderOkHi = () => {
     const {launchOkHi} = this.state;
 
-    const auth =
-      'SWF0ejlENkFOVDphZjNkZGQxMi00ZTI5LTQ1MDItODQyMS1iZTlkNmUzODcwZTU=';
-
     const user: OkHiUser = this.user;
 
-    const appBarConfig: OkHiAppBarConfiguration = {
+    const appBarConfig: OkHiLocationManagerAppBarConfiguration = {
       visible: true,
     };
 
-    const config: OkHiConfig = {streetView: true, appBar: appBarConfig};
+    const config: OkHiLocationManagerConfig = {
+      streetView: true,
+      appBar: appBarConfig,
+    };
 
     const safeAreaViewProps: ViewProps = {style: {backgroundColor: '#37474F'}};
 
-    const theme: OkHiTheme = {
+    const theme: OkHiLocationManagerTheme = {
       appBar: {
         backgroundColor: '#37474F',
         logo:
@@ -151,17 +147,9 @@ export default class HomeScreen extends React.Component<
       },
     };
 
-    const context: OkHiAppContext = {
-      app: {name: 'OkHi DemoApp', version: '1.0.0', build: 1},
-      mode: OkHiMode.DEV,
-      platform: {name: OkHiPlatformType.HYBRID},
-      developer: {name: OkHiIntergrationType.OKHI},
-    };
-
     return (
       <OkHiLocationManager
-        auth={auth}
-        appContext={context}
+        core={core}
         user={user}
         theme={theme}
         config={config}

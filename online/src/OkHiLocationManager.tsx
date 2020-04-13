@@ -1,14 +1,21 @@
 import React from 'react';
+import manifest from '../package.json';
 import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import {
+import OkHiCore, {
   OkHiUser,
-  OkHiConfig,
-  OkHiTheme,
   OkHiLocation,
-  OkHiError,
-} from '@okhi/types';
-import { OkHiLocationManagerProps } from './index';
+  OkHiContext,
+  OkHiMode,
+  OkHiException,
+  OkHiErrorCodes,
+  OkHiErrorMessages,
+} from '@okhi/core';
+import {
+  OkHiLocationManagerProps,
+  OkHiLocationManagerConfig,
+  OkHiLocationManagerTheme,
+} from './index';
 
 interface OkHiStyle {
   base?: {
@@ -49,28 +56,21 @@ export class OkHiLocationManager extends React.Component<
   { loading: boolean; modalVisible: boolean }
 > {
   private readonly LIB = {
-    name: 'ok-collect-online-react-native',
-    version: '1.0.2',
+    name: manifest.name,
+    version: manifest.version,
   };
-  private readonly DEV_AUTH_URL =
-    'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly PROD_AUTH_URL =
-    'https://api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly SANDBOX_AUTH_URL =
-    'https://sandbox-api.okhi.io/v5/auth/mobile/generate-auth-token';
   private readonly DEV_FRAME_URL = 'https://dev-manager-v5.okhi.io';
   private readonly PROD_FRAME_URL = 'https://manager-v5.okhi.io';
   private readonly SANDBOX_FRAME_URL = 'https://sandbox-manager-v5.okhi.io';
   private readonly FRAME_URL: string;
-  private readonly AUTHORIZATION_URL: string;
   private readonly user: OkHiUser;
-  private readonly auth: string | null;
-  private readonly config: OkHiConfig | null;
-  private readonly theme: OkHiTheme | null;
+  private readonly config: OkHiLocationManagerConfig | null;
+  private readonly theme: OkHiLocationManagerTheme | null;
   private readonly onSuccess:
     | ((location: OkHiLocation, user: OkHiUser) => any)
     | null;
-  private readonly onError: ((error: OkHiError) => any) | null;
+  private readonly onError: ((error: OkHiException) => any) | null;
+  private readonly core: OkHiCore;
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
   private authToken: string | null;
@@ -78,27 +78,15 @@ export class OkHiLocationManager extends React.Component<
 
   constructor(props: any) {
     super(props);
-    const {
-      user,
-      auth,
-      config,
-      onSuccess,
-      onError,
-      theme,
-      appContext,
-    } = this.props;
+    const { user, config, onSuccess, onError, theme, core } = this.props;
+    const context = core.fetchOkHiContext();
+    this.core = core;
+    this.core = core;
     this.user = user;
-    this.auth = auth || null;
-    this.AUTHORIZATION_URL =
-      !appContext || !appContext.mode
-        ? this.SANDBOX_AUTH_URL
-        : appContext.mode === 'prod'
-        ? this.PROD_AUTH_URL
-        : this.DEV_AUTH_URL;
     this.FRAME_URL =
-      !appContext || !appContext.mode
+      context && context.mode === OkHiMode.SANDBOX
         ? this.SANDBOX_FRAME_URL
-        : appContext.mode === 'prod'
+        : context && context.mode === OkHiMode.PROD
         ? this.PROD_FRAME_URL
         : this.DEV_FRAME_URL;
     this.config = config || null;
@@ -117,7 +105,7 @@ export class OkHiLocationManager extends React.Component<
 
   private init = async () => {
     try {
-      this.authToken = await this.fetchAuthToken();
+      this.authToken = await this.core.fetchAuthorizationToken();
 
       const message = 'select_location';
 
@@ -159,28 +147,11 @@ export class OkHiLocationManager extends React.Component<
         },
       };
 
-      const appContext = this.props.appContext || {};
+      const okhiContext: OkHiContext = this.core.fetchOkHiContext();
 
-      const container =
-        appContext.app && appContext.app.name && appContext.app.version
-          ? appContext.app
-          : undefined;
-
-      const context = {
-        container,
-        developer: {
-          name:
-            appContext.developer && appContext.developer.name
-              ? appContext.developer.name
-              : 'external',
-        },
+      const context: OkHiContext = {
+        ...okhiContext,
         library: this.LIB,
-        platform: {
-          name:
-            appContext.platform && appContext.platform.name
-              ? appContext.platform.name
-              : 'hybrid',
-        },
       };
 
       const payload = {
@@ -198,14 +169,29 @@ export class OkHiLocationManager extends React.Component<
         payload.user && payload.user.phone ? payload.user.phone : undefined
       );
 
-      if (!payload.user || !isUserValid.valid || !isUserValid.formattedPhone) {
-        throw new Error('invalid user');
-      } else {
-        payload.user.phone = isUserValid.formattedPhone;
+      if (!payload.auth || !payload.auth.authToken) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.unauthorized,
+          message: OkHiErrorMessages.unauthorized,
+        });
       }
 
-      if (!payload.auth || !payload.auth.authToken) {
-        throw new Error('invalid auth token');
+      if (!payload.user) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.invalid_configuration,
+          message: OkHiErrorMessages.invalid_configuration,
+        });
+      }
+
+      if (!isUserValid.valid) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.invalid_phone,
+          message: OkHiErrorMessages.invalid_phone,
+        });
+      }
+
+      if (isUserValid.formattedPhone) {
+        payload.user.phone = isUserValid.formattedPhone;
       }
 
       this.startPayload = { message, payload };
@@ -248,56 +234,27 @@ export class OkHiLocationManager extends React.Component<
     return response;
   };
 
-  private handleInitError = (error: any) => {
-    const errorString = error.toString();
-    if (errorString.includes('token') && this.onError) {
-      this.onError({
-        code: 'invalid_auth_token',
-        message: 'Unable to establish a secure connection with remote server',
-      });
-    } else if (errorString.includes('user') && this.onError) {
-      this.onError({
-        code: 'invalid_phone',
-        message:
-          'Invalid phone number. Please add your phone number using the + country code format eg. +25472317838',
-      });
+  private handleInitError = (error: OkHiException) => {
+    if (error.code && error.message && this.onError) {
+      this.onError(error);
     } else if (this.onError) {
-      this.onError({
-        code: 'network_request_failed',
-        message: 'Unable to establish a secure connection with remote server',
-      });
-    }
-  };
-
-  private fetchAuthToken = async () => {
-    try {
-      const response = await fetch(this.AUTHORIZATION_URL, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Token ${this.auth}`,
-        },
-      });
-      if (response.status !== 200) {
-        throw new Error('invalid auth token');
-      }
-      const data: { authorization_token: string } = await response.json();
-      if (!data.authorization_token) {
-        throw new Error('authorization_token not provided');
-      }
-      return data.authorization_token;
-    } catch (error) {
-      throw error;
+      this.onError(
+        new OkHiException({
+          code: OkHiErrorCodes.network_error,
+          message: OkHiErrorMessages.network_error,
+        })
+      );
     }
   };
 
   private handleFailure = () => {
     if (this.onError) {
-      this.onError({
-        code: 'fatal_exit',
-        message: 'Something went wrong during the address creation process',
-      });
+      this.onError(
+        new OkHiException({
+          code: OkHiErrorCodes.unknown_error,
+          message: OkHiErrorMessages.unknown_error,
+        })
+      );
     }
   };
 
@@ -359,10 +316,12 @@ export class OkHiLocationManager extends React.Component<
       }
     } catch (error) {
       if (this.onError) {
-        this.onError({
-          code: 'invalid_response',
-          message: 'Invalid response received',
-        });
+        this.onError(
+          new OkHiException({
+            code: OkHiErrorCodes.unknown_error,
+            message: OkHiErrorMessages.unknown_error,
+          })
+        );
       }
     }
   };
