@@ -1,4 +1,9 @@
-import { OkHiUser, OkHiLocation, OkHiError as OE } from '@okhi/core';
+import OkHiCore, {
+  OkHiUser,
+  OkHiLocation,
+  OkHiError as OE,
+  OkHiException,
+} from '@okhi/core';
 import { ViewProps } from 'react-native';
 import { WebViewProps } from 'react-native-webview';
 import { OkHiLocationManager } from './OkHiLocationManager';
@@ -33,6 +38,7 @@ export interface OkHiLocationManagerTheme {
 }
 
 export interface OkHiLocationManagerProps {
+  core: OkHiCore;
   user: OkHiUser;
   config?: OkHiLocationManagerConfig;
   theme?: OkHiLocationManagerTheme;
@@ -41,7 +47,7 @@ export interface OkHiLocationManagerProps {
   safeAreaViewProps?: ViewProps;
   webviewProps?: WebViewProps;
   onSuccess?: (location: OkHiLocation, user: OkHiUser) => any;
-  onError?: (error: OkHiError) => any;
+  onError?: (error: OkHiException) => any;
   onCloseRequest?: () => any;
 }
 
