@@ -16,10 +16,10 @@ import {request, PERMISSIONS} from 'react-native-permissions';
 import OkHiLocationManager, {
   OkHiLocationManagerConfig,
   OkHiLocationManagerAppBarConfiguration,
-  OkHiError,
   OkHiLocationManagerTheme,
-} from '../../lib/okcollect-online';
-import {OkHiUser, OkHiLocation} from '@okhi/core';
+} from '@okhi/okcollect-manager-react-native';
+import {OkHiUser, OkHiLocation, OkHiException} from '@okhi/core';
+import core from '../../services/OkHiCore';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
 
@@ -52,6 +52,7 @@ export default class HomeScreen extends React.Component<
     this.state = {
       launchOkHi: false,
     };
+    // console.log(OkHi.fetchContext());
   }
 
   handleFabPress = async () => {
@@ -85,7 +86,7 @@ export default class HomeScreen extends React.Component<
     });
   };
 
-  handleError = (error: OkHiError) => {
+  handleError = (error: OkHiException) => {
     this.setState({launchOkHi: false});
     if (error.code === 'network_request_failed') {
       Toast.show({
@@ -148,6 +149,7 @@ export default class HomeScreen extends React.Component<
 
     return (
       <OkHiLocationManager
+        core={core}
         user={user}
         theme={theme}
         config={config}
