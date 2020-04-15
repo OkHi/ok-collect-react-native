@@ -1,5 +1,4 @@
 import React from 'react';
-import manifest from '../package.json';
 import { ActivityIndicator, SafeAreaView, Modal, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import OkHiCore, {
@@ -11,45 +10,16 @@ import OkHiCore, {
   OkHiErrorCodes,
   OkHiErrorMessages,
 } from '@okhi/core';
+import manifest from '../package.json';
 import {
   OkHiLocationManagerProps,
   OkHiLocationManagerConfig,
   OkHiLocationManagerTheme,
 } from './index';
-
-interface OkHiStyle {
-  base?: {
-    color?: string;
-    name?: string;
-    [key: string]: any;
-  };
-}
-
-interface OkHiLocationManagerStartPayload {
-  message: 'select_location' | 'start_app';
-  payload: {
-    user?: OkHiUser;
-    auth?: {
-      authToken: string;
-    };
-    style?: OkHiStyle;
-    context?: any;
-    config?: {
-      streetView: boolean;
-      [key: string]: any;
-    };
-  };
-}
-
-interface OkHiLocationManagerResponse {
-  message:
-    | 'location_selected'
-    | 'location_created'
-    | 'location_updated'
-    | 'exit_app'
-    | 'fatal_exit';
-  response: string | { user: any; location: any } | string;
-}
+import {
+  OkHiLocationManagerStartPayload,
+  OkHiLocationManagerResponse,
+} from './types';
 
 export class OkHiLocationManager extends React.Component<
   OkHiLocationManagerProps,
@@ -73,27 +43,24 @@ export class OkHiLocationManager extends React.Component<
   private readonly core: OkHiCore;
   private jsBeforeLoad: string | null;
   private jsAfterLoad: string | null;
-  private authToken: string | null;
   private startPayload: OkHiLocationManagerStartPayload | null;
 
   constructor(props: any) {
     super(props);
     const { user, config, onSuccess, onError, theme, core } = this.props;
-    const context = core.fetchOkHiContext();
     this.core = core;
-    this.core = core;
+    this.context = this.core.getContext();
     this.user = user;
     this.FRAME_URL =
-      context && context.mode === OkHiMode.SANDBOX
+      this.context && this.context.mode === OkHiMode.SANDBOX
         ? this.SANDBOX_FRAME_URL
-        : context && context.mode === OkHiMode.PROD
+        : this.context && this.context.mode === OkHiMode.PROD
         ? this.PROD_FRAME_URL
         : this.DEV_FRAME_URL;
     this.config = config || null;
     this.theme = theme || null;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    this.authToken = null;
     this.startPayload = null;
     this.jsBeforeLoad = null;
     this.jsAfterLoad = null;
@@ -105,14 +72,8 @@ export class OkHiLocationManager extends React.Component<
 
   private init = async () => {
     try {
-      this.authToken = await this.core.fetchAuthorizationToken();
-
       const message = 'select_location';
-
-      const auth = this.authToken ? { authToken: this.authToken } : undefined;
-
       const user = this.user && this.user.phone ? this.user : undefined;
-
       const style = !this.theme
         ? undefined
         : {
@@ -127,7 +88,6 @@ export class OkHiLocationManager extends React.Component<
                   : undefined,
             },
           };
-
       const config = {
         streetView:
           this.config && typeof this.config.streetView === 'boolean'
@@ -146,56 +106,44 @@ export class OkHiLocationManager extends React.Component<
               : undefined,
         },
       };
-
-      const okhiContext: OkHiContext = this.core.fetchOkHiContext();
-
+      const okhiContext: OkHiContext = this.core.getContext();
       const context: OkHiContext = {
         ...okhiContext,
         library: this.LIB,
       };
+      let authToken = null;
 
-      const payload = {
-        auth,
-        user,
-        style,
-        config,
-        context,
-      };
-
-      const isUserValid: {
-        valid: boolean;
-        formattedPhone?: string;
-      } = this.verifyPhoneNumber(
-        payload.user && payload.user.phone ? payload.user.phone : undefined
-      );
-
-      if (!payload.auth || !payload.auth.authToken) {
+      if (user && user.phone) {
+        authToken = await this.core.user.anonymousSignWithPhoneNumber(
+          user.phone,
+          ['address']
+        );
+      }
+      if (!user) {
+        throw new OkHiException({
+          code: OkHiErrorCodes.invalid_configuration,
+          message: OkHiErrorMessages.invalid_configuration,
+        });
+      }
+      if (!authToken) {
         throw new OkHiException({
           code: OkHiErrorCodes.unauthorized,
           message: OkHiErrorMessages.unauthorized,
         });
       }
 
-      if (!payload.user) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.invalid_configuration,
-          message: OkHiErrorMessages.invalid_configuration,
-        });
-      }
-
-      if (!isUserValid.valid) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.invalid_phone,
-          message: OkHiErrorMessages.invalid_phone,
-        });
-      }
-
-      if (isUserValid.formattedPhone) {
-        payload.user.phone = isUserValid.formattedPhone;
-      }
-
-      this.startPayload = { message, payload };
-
+      this.startPayload = {
+        message,
+        payload: {
+          auth: {
+            authToken,
+          },
+          user,
+          style,
+          config,
+          context,
+        },
+      };
       this.jsBeforeLoad = `
       window.isNativeApp = true;
       window.NativeApp = {
@@ -206,32 +154,15 @@ export class OkHiLocationManager extends React.Component<
       }
       true;
       `;
-
       this.jsAfterLoad = `
       window.startOkHiLocationManager({ 
         receiveMessage: function(data) { window.ReactNativeWebView.postMessage(data) } }, 
         ${JSON.stringify(this.startPayload)})
       `;
-
       this.setState({ loading: false });
     } catch (error) {
       this.handleInitError(error);
     }
-  };
-
-  private verifyPhoneNumber = (phone = '') => {
-    const regex = /^\+[1-9]\d{6,14}$/;
-    let formattedPhone = phone.replace(/\s/g, '');
-    formattedPhone =
-      formattedPhone[0] === '+' ? formattedPhone : `+${formattedPhone}`;
-    const response = { valid: regex.test(formattedPhone) };
-    if (response.valid) {
-      return {
-        ...response,
-        formattedPhone,
-      };
-    }
-    return response;
   };
 
   private handleInitError = (error: OkHiException) => {
