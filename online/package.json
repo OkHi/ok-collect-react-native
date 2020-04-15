@@ -48,7 +48,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@okhi/core": "^1.0.0",
+    "@okhi/core": "^1.1.0",
     "react-native-webview": "^9.0.1"
   },
   "repository": {
