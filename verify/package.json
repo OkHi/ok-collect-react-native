@@ -32,7 +32,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "verify",
+  "name": "@okhi/okcollect-verify-react-native",
   "author": "Julius Kiano",
   "module": "dist/verify.esm.js",
   "devDependencies": {
