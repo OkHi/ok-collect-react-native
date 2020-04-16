@@ -45,9 +45,23 @@
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
+  "keywords": [
+    "okhi",
+    "okcollect",
+    "verify",
+    "okverify"
+  ],
   "dependencies": {
     "@okhi/core": "^1.1.0",
     "axios": "^0.19.2",
     "react-native-background-geofencing": "^1.0.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OkHi/ok-collect-react-native/tree/master/verify"
+  },
+  "bugs": {
+    "url": "https://github.com/OkHi/ok-collect-react-native/issues"
+  },
+  "homepage": "https://github.com/OkHi/ok-collect-react-native/tree/master/verify#readme"
 }
