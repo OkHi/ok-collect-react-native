@@ -18,6 +18,7 @@ import OkHiLocationManager, {
   OkHiLocationManagerAppBarConfiguration,
   OkHiLocationManagerTheme,
 } from '@okhi/okcollect-manager-react-native';
+import * as OkVerify from '@okhi/okcollect-verify-react-native';
 import {OkHiUser, OkHiLocation, OkHiException} from '@okhi/core';
 import core from '../../services/OkHiCore';
 import {Store, User} from '../../interfaces';
@@ -80,7 +81,14 @@ export default class HomeScreen extends React.Component<
     }
   };
 
-  handleSuccess = (location: OkHiLocation, user: OkHiUser) => {
+  handleSuccess = async (location: OkHiLocation, user: OkHiUser) => {
+    if (location.id && location.geoPoint) {
+      const result = await OkVerify.start(core, user, {
+        id: location.id,
+        geoPoint: location.geoPoint,
+      });
+      console.log('verification started: ', result);
+    }
     this.setState({launchOkHi: false}, () => {
       this.props.store.setValues({user, address: location});
     });
