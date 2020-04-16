@@ -18,11 +18,11 @@ import OkHiLocationManager, {
   OkHiLocationManagerAppBarConfiguration,
   OkHiLocationManagerTheme,
 } from '@okhi/okcollect-manager-react-native';
+import * as OkVerify from '@okhi/okcollect-verify-react-native';
 import {OkHiUser, OkHiLocation, OkHiException} from '@okhi/core';
 import core from '../../services/OkHiCore';
 import {Store, User} from '../../interfaces';
 import AddressItem from '../../components/AddressItem';
-import * as OkVerify from '../../services/OkVerify';
 
 function Loader() {
   const containerStyles: StyleProp<ViewStyle> = {
