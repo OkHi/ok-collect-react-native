@@ -892,11 +892,17 @@
     axios "^0.19.2"
 
 "@okhi/okcollect-manager-react-native@file:../online":
-  version "1.2.0"
+  version "1.2.1"
   dependencies:
     "@okhi/core" "^1.1.0"
-    react-native-get-random-values "^1.3.1"
     react-native-webview "^9.2.1"
+
+"@okhi/okcollect-verify-react-native@file:../verify":
+  version "0.1.0"
+  dependencies:
+    "@okhi/core" "^1.1.0"
+    axios "^0.19.2"
+    react-native-background-geofencing "^1.0.4"
 
 "@react-native-community/async-storage@^1.8.1":
   version "1.9.0"
