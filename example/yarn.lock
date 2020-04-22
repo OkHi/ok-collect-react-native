@@ -895,14 +895,14 @@
   version "1.2.1"
   dependencies:
     "@okhi/core" "^1.1.0"
-    react-native-webview "^9.2.1"
+    react-native-webview "^9.2.2"
 
 "@okhi/okcollect-verify-react-native@file:../verify":
-  version "0.1.0"
+  version "1.0.3"
   dependencies:
     "@okhi/core" "^1.1.0"
     axios "^0.19.2"
-    react-native-background-geofencing "^1.0.4"
+    react-native-background-geofencing "^1.1.0"
 
 "@react-native-community/async-storage@^1.8.1":
   version "1.9.0"
@@ -2927,11 +2927,6 @@ fancy-log@^1.3.2:
     color-support "^1.1.3"
     parse-node-version "^1.0.0"
     time-stamp "^1.0.0"
-
-fast-base64-decode@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fast-base64-decode/-/fast-base64-decode-1.0.0.tgz#b434a0dd7d92b12b43f26819300d2dafb83ee418"
-  integrity sha512-qwaScUgUGBYeDNRnbc/KyllVU88Jk1pRHPStuF/lO7B0/RTRLj7U0lkdTAutlBblY08rwZDff6tNU9cjv6j//Q==
 
 fast-deep-equal@^3.1.1:
   version "3.1.1"
@@ -5588,6 +5583,11 @@ react-native-background-geofencing@^1.0.4:
   resolved "https://registry.yarnpkg.com/react-native-background-geofencing/-/react-native-background-geofencing-1.0.4.tgz#40e52066aa4be97ce321974a1c45f52333a65c22"
   integrity sha512-52SGV3zT3Ma1SeffOcjmAeT1XdLfa/pxH6o2q/DvAa0P6biZtI1jIhvZ5JVC8a6lwvI3Ss779ZXEYUU2iO1APw==
 
+react-native-background-geofencing@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-geofencing/-/react-native-background-geofencing-1.1.0.tgz#7d29ce60af852efe11a44b325e3cd38e35ae8dbe"
+  integrity sha512-szHoZ+j/eeuWrSszXNHx/CpZC1JAew28PawKpdzihK7LyF6krdmYc2b61/Y4KJLYzcvXkrW0pbpL+UYF2OVOaw==
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
@@ -5612,13 +5612,6 @@ react-native-gesture-handler@^1.6.0:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
-
-react-native-get-random-values@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-get-random-values/-/react-native-get-random-values-1.3.1.tgz#f5e0dce92ed0ba3aad7a41df7bca712ccd840e46"
-  integrity sha512-+oli7JzmIGR75KZM2phjFUCBJwv7YEXuGRBq2M1pMqgQOqEUdZRK7qxC8w2luEANPAQ5plykOZiKwN7Aay9HZA==
-  dependencies:
-    fast-base64-decode "^1.0.0"
 
 react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
@@ -5666,14 +5659,13 @@ react-native-vector-icons@^6.6.0:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
-react-native-webview@^9.2.1:
-  version "9.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-9.2.1.tgz#3984266c098bdd06fe9fe1d2393ed2f8fd7c67cd"
-  integrity sha512-1h6EKYeWZyw0hbG77CWB+5MhF64qC1Xim9ZacKbjXhZBolDtUudTmBMHuy4fN2PCkGdwgSUVOPA+wNn3L4HBJw==
+react-native-webview@^9.2.2:
+  version "9.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-9.2.2.tgz#9e6df0ba4d55f933c04fdbbc89c142eb65490bef"
+  integrity sha512-S++DzIw4b5K0jmuChUGgNbrN535w7CBEWnOC9dbeGsbUcexbFvHTS9aNcSajBWaFKAG1aDkQfw/7xL8AfK+A7g==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
-    uuid "^7.0.3"
 
 react-native@0.61.5:
   version "0.61.5"
@@ -6927,11 +6919,6 @@ uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
-  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"
