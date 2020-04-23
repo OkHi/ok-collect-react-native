@@ -22,6 +22,16 @@ interface OkVerifyGeofenceConfiguration {
   loitering_delay: number;
 }
 
+interface OkVerifyGeofenceConfig {
+  radius: number;
+  expiration: number;
+  notificationResponsiveness: number;
+  loiteringDelay: number;
+  setDwellTransitionType: boolean;
+  registerOnDeviceRestart: boolean;
+  setInitialTriggers: boolean;
+}
+
 const DEV_TRANSIT_URL = 'https://dev-api.okhi.io/v5/users/transits';
 const SANDBOX_TRANSIT_URL = 'https://sandbox-api.okhi.io/v5/users/transits';
 const PROD_TRANSIT_URL = 'https://api.okhi.io/v5/users/transits';
@@ -30,6 +40,16 @@ const DEV_CONFIG_URL = 'https://dev-api.okhi.io/v5/verify/config';
 const SANDBOX_CONFIG_URL = 'https://sandbox-api.okhi.io/v5/verify/config';
 const PROD_CONFIG_URL = 'https://api.okhi.io/v5/verify/config';
 const scopes: Array<OkHiAccessScope> = ['verify'];
+
+const DEFAULT_GEOFENCE_CONFIG: OkVerifyGeofenceConfig = {
+  radius: 300,
+  expiration: -1,
+  notificationResponsiveness: 300000,
+  setInitialTriggers: true,
+  registerOnDeviceRestart: true,
+  setDwellTransitionType: true,
+  loiteringDelay: 1800000,
+};
 
 export const start = async (
   core: OkHiCore,
@@ -75,7 +95,6 @@ export const start = async (
       CONFIG_URL = SANDBOX_CONFIG_URL;
     }
     if (!token) {
-      console.log('webhook not configured..starting configuration');
       if (!token && user.userId) {
         token = await core.user.anonymousSignInWithUserId(user.userId, scopes);
       }
@@ -92,7 +111,6 @@ export const start = async (
         },
       };
       await configureWebhook(webhookConfiguration);
-      console.log('webhook configured!');
     }
     const geofenceConfig = await getGeofenceConfiguration(core, CONFIG_URL);
     const geofence: RNGeofence = {
@@ -115,6 +133,7 @@ export const start = async (
     });
   }
 };
+
 export const stop = async (locationId: string) => {
   try {
     RNBackgroundGeofencing.remove(locationId);
@@ -132,25 +151,37 @@ export const stop = async (locationId: string) => {
     });
   }
 };
-const getGeofenceConfiguration = async (core: OkHiCore, URL: string) => {
+
+const getGeofenceConfiguration = async (
+  core: OkHiCore,
+  URL: string
+): Promise<OkVerifyGeofenceConfig> => {
   try {
     const { data } = await axios.get<OkVerifyGeofenceConfiguration>(URL, {
       headers: {
         Authorization: `Token ${core.getAccessToken()}`,
       },
+      timeout: 30000,
     });
-    return data;
+    const {
+      radius,
+      expiration,
+      notification_responsiveness,
+      loitering_delay,
+      set_dwell_transition_type,
+      register_on_device_restart,
+      set_initial_triggers,
+    } = data;
+    return {
+      radius,
+      expiration,
+      notificationResponsiveness: notification_responsiveness,
+      loiteringDelay: loitering_delay,
+      setDwellTransitionType: set_dwell_transition_type,
+      registerOnDeviceRestart: register_on_device_restart,
+      setInitialTriggers: set_initial_triggers,
+    };
   } catch (error) {
-    if (!error.response || !error.response.status) {
-      throw new OkHiException({
-        code: OkHiErrorCodes.network_error,
-        message: OkHiErrorMessages.network_error,
-      });
-    } else {
-      throw new OkHiException({
-        code: OkHiErrorCodes.unauthorized,
-        message: OkHiErrorCodes.unauthorized,
-      });
-    }
+    return DEFAULT_GEOFENCE_CONFIG;
   }
 };
