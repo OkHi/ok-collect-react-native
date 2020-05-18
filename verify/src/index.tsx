@@ -110,12 +110,10 @@ export const start = async (
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        extra: {
-          meta: {
-            lib: {
-              name: manifest.name,
-              version: manifest.version,
-            },
+        meta: {
+          lib: {
+            name: manifest.name,
+            version: manifest.version,
           },
         },
       };
