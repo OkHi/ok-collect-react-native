@@ -4685,10 +4685,10 @@ react-is@^16.8.1, react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-background-geofencing@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-background-geofencing/-/react-native-background-geofencing-1.1.1.tgz#1aa39aaff5443927073dca14c837b9ef01c677f0"
-  integrity sha512-pghOl9PqUZYOwQJjDjZt/oVilvpZW2X1TV09EIVv3SDMgzaJ1/413OjZGwYfB/9am63cS7jdzCv/nA77e7XPoA==
+react-native-background-geofencing@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-geofencing/-/react-native-background-geofencing-1.2.0.tgz#315ca78241b18dd1774d6280e0de5aaa0a38309a"
+  integrity sha512-KYdw6UYsEa480bJ0pukKmOrIGBYgqgkqIjThFnHPNFJkEK8BeYA7bV57JCIoU7M5WaxqYE3YlCd5bFyjAi/CPw==
 
 react@^16.13.1:
   version "16.13.1"
