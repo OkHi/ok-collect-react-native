@@ -11,6 +11,7 @@ import OkHiCore, {
   OkHiAccessScope,
   OkHiMode,
 } from '@okhi/core';
+import manifest from './manifest.json';
 
 interface OkVerifyGeofenceConfiguration {
   radius: number;
@@ -108,6 +109,14 @@ export const start = async (
         url: TRANSIT_URL,
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        extra: {
+          meta: {
+            lib: {
+              name: manifest.name,
+              version: manifest.version,
+            },
+          },
         },
       };
       await configureWebhook(webhookConfiguration);
