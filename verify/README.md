@@ -1,3 +1,3 @@
-# @okhi/okcollect-verify-react-native
+# @okhi/okverify-mobile-react-native
 
-To be documented...
+- [Getting Started](https://docs.okhi.co/v/v5.0-alpha/integrating-okhi/okhi-on-your-react-native-app)
