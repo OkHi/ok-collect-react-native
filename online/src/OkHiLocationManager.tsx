@@ -26,7 +26,7 @@ export class OkHiLocationManager extends React.Component<
   { loading: boolean; modalVisible: boolean }
 > {
   private readonly LIB = {
-    name: manifest.name,
+    name: 'okCollectWebReactNative',
     version: manifest.version,
   };
   private readonly DEV_FRAME_URL = 'https://dev-manager-v5.okhi.io';
