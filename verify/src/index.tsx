@@ -112,7 +112,7 @@ export const start = async (
         },
         meta: {
           lib: {
-            name: manifest.name,
+            name: 'okVerifyMobileReactNative',
             version: manifest.version,
           },
         },
