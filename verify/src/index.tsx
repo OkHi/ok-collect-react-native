@@ -1,7 +1,7 @@
 import axios from 'axios';
 import RNBackgroundGeofencing, {
-  configureWebhook,
-  RNGeofenceWebhookConfig,
+  RNGeofenceWebhook,
+  RNGeofenceNotification,
   RNGeofence,
 } from 'react-native-background-geofencing';
 import OkHiCore, {
@@ -55,11 +55,12 @@ const DEFAULT_GEOFENCE_CONFIG: OkVerifyGeofenceConfig = {
 export const start = async (
   core: OkHiCore,
   user: { phone?: string; userId?: string },
-  location: { id: string; geoPoint: { lat: number; lon: number } }
+  location: { id: string; geoPoint: { lat: number; lon: number } },
+  notification: RNGeofenceNotification
 ) => {
   let TRANSIT_URL: string;
   let CONFIG_URL: string;
-  let webhookConfiguration: RNGeofenceWebhookConfig;
+  let webhookConfiguration: RNGeofenceWebhook;
   let token: string = '';
   try {
     if (!core) {
@@ -117,7 +118,10 @@ export const start = async (
           },
         },
       };
-      await configureWebhook(webhookConfiguration);
+      await RNBackgroundGeofencing.configure({
+        notification: notification || null,
+        webhook: webhookConfiguration,
+      });
     }
     const geofenceConfig = await getGeofenceConfiguration(core, CONFIG_URL);
     const geofence: RNGeofence = {
