@@ -3,7 +3,7 @@ import RNBackgroundGeofencing, {
   RNGeofenceWebhook,
   RNGeofenceNotification,
   RNGeofence,
-} from 'react-native-background-geofencing';
+} from '@okhi/react-native-background-geofencing';
 import OkHiCore, {
   OkHiException,
   OkHiErrorCodes,
