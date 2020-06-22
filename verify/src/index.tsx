@@ -1,7 +1,6 @@
 import axios from 'axios';
 import RNBackgroundGeofencing, {
   RNGeofenceWebhook,
-  RNGeofenceNotification,
   RNGeofence,
   hasLocationPermission as locationPermissionCheck,
   isLocationServicesEnabled as locationServicesCheck,
@@ -57,8 +56,7 @@ const DEFAULT_GEOFENCE_CONFIG: OkVerifyGeofenceConfig = {
 export const start = async (
   core: OkHiCore,
   user: { phone?: string; userId?: string },
-  location: { id: string; geoPoint: { lat: number; lon: number } },
-  notification: RNGeofenceNotification
+  location: { id: string; geoPoint: { lat: number; lon: number } }
 ) => {
   let TRANSIT_URL: string;
   let CONFIG_URL: string;
@@ -121,7 +119,6 @@ export const start = async (
         },
       };
       await RNBackgroundGeofencing.configure({
-        notification: notification || null,
         webhook: webhookConfiguration,
       });
     }
