@@ -3,6 +3,8 @@ import RNBackgroundGeofencing, {
   RNGeofenceWebhook,
   RNGeofenceNotification,
   RNGeofence,
+  hasLocationPermission as locationPermissionCheck,
+  isLocationServicesEnabled as locationServicesCheck,
 } from '@okhi/react-native-background-geofencing';
 import OkHiCore, {
   OkHiException,
@@ -196,3 +198,11 @@ const getGeofenceConfiguration = async (
     return DEFAULT_GEOFENCE_CONFIG;
   }
 };
+
+export const hasLocationPermission = locationPermissionCheck;
+
+export const isLocationServicesEnabled = locationServicesCheck;
+
+export const init = RNBackgroundGeofencing.init;
+
+export const restart = RNBackgroundGeofencing.restart;
