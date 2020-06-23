@@ -1,8 +1,10 @@
 import axios from 'axios';
 import RNBackgroundGeofencing, {
   RNGeofenceWebhook,
-  RNGeofenceNotification,
   RNGeofence,
+  hasLocationPermission as locationPermissionCheck,
+  isLocationServicesEnabled as locationServicesCheck,
+  openLocationServicesSettings as servicesSettings,
 } from '@okhi/react-native-background-geofencing';
 import OkHiCore, {
   OkHiException,
@@ -55,8 +57,7 @@ const DEFAULT_GEOFENCE_CONFIG: OkVerifyGeofenceConfig = {
 export const start = async (
   core: OkHiCore,
   user: { phone?: string; userId?: string },
-  location: { id: string; geoPoint: { lat: number; lon: number } },
-  notification: RNGeofenceNotification
+  location: { id: string; geoPoint: { lat: number; lon: number } }
 ) => {
   let TRANSIT_URL: string;
   let CONFIG_URL: string;
@@ -119,7 +120,6 @@ export const start = async (
         },
       };
       await RNBackgroundGeofencing.configure({
-        notification: notification || null,
         webhook: webhookConfiguration,
       });
     }
@@ -195,4 +195,24 @@ const getGeofenceConfiguration = async (
   } catch (error) {
     return DEFAULT_GEOFENCE_CONFIG;
   }
+};
+
+export const hasLocationPermission = () => {
+  return locationPermissionCheck();
+};
+
+export const isLocationServicesEnabled = () => {
+  return locationServicesCheck();
+};
+
+export const init = () => {
+  RNBackgroundGeofencing.init();
+};
+
+export const restart = () => {
+  RNBackgroundGeofencing.restart();
+};
+
+export const openLocationServicesSettings = () => {
+  servicesSettings();
 };

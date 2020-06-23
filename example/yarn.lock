@@ -892,17 +892,22 @@
     axios "^0.19.2"
 
 "@okhi/okcollect-manager-react-native@file:../online":
-  version "1.2.2"
+  version "1.2.4"
   dependencies:
     "@okhi/core" "^1.1.0"
     react-native-webview "^9.2.2"
 
-"@okhi/okcollect-verify-react-native@file:../verify":
-  version "1.0.5"
+"@okhi/okverify-mobile-react-native@file:../verify":
+  version "1.0.9"
   dependencies:
     "@okhi/core" "^1.1.0"
+    "@okhi/react-native-background-geofencing" "^1.4.0"
     axios "^0.19.2"
-    react-native-background-geofencing "^1.2.1"
+
+"@okhi/react-native-background-geofencing@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@okhi/react-native-background-geofencing/-/react-native-background-geofencing-1.4.0.tgz#89cc4dcff49f2d61328784a6568f381af47a57da"
+  integrity sha512-TIZaEQC7FJhHjCvgERz0o9YB1k+dLgIaimkzld5/9aciF/vOjWgaefrUkkwobtU7KiNJ18ksfFnEtnoyr2FaMQ==
 
 "@react-native-community/async-storage@^1.8.1":
   version "1.10.3"
@@ -5572,11 +5577,6 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.7.0, react-is@^16.8.1, react-
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
-
-react-native-background-geofencing@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-background-geofencing/-/react-native-background-geofencing-1.2.1.tgz#081120809b014442639bedd08417461a100f21b8"
-  integrity sha512-Gri+sm6aXv3dUHOLyXaxEUkG50VqPBuO6GYYr8zz6EwjfsdZTE4Rs1/OEeNnXTw+/hMQHiyHTTZuGt9JEKA7Tw==
 
 react-native-drawer@2.5.1:
   version "2.5.1"
