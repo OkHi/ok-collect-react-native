@@ -4,6 +4,7 @@ import RNBackgroundGeofencing, {
   RNGeofence,
   hasLocationPermission as locationPermissionCheck,
   isLocationServicesEnabled as locationServicesCheck,
+  openLocationServicesSettings as servicesSettings,
 } from '@okhi/react-native-background-geofencing';
 import OkHiCore, {
   OkHiException,
@@ -196,10 +197,22 @@ const getGeofenceConfiguration = async (
   }
 };
 
-export const hasLocationPermission = locationPermissionCheck;
+export const hasLocationPermission = () => {
+  locationPermissionCheck();
+};
 
-export const isLocationServicesEnabled = locationServicesCheck;
+export const isLocationServicesEnabled = () => {
+  locationServicesCheck();
+};
 
-export const init = RNBackgroundGeofencing.init;
+export const init = () => {
+  RNBackgroundGeofencing.init();
+};
 
-export const restart = RNBackgroundGeofencing.restart;
+export const restart = () => {
+  RNBackgroundGeofencing.restart();
+};
+
+export const openLocationServicesSettings = () => {
+  servicesSettings();
+};
