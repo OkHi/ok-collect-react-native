@@ -198,11 +198,11 @@ const getGeofenceConfiguration = async (
 };
 
 export const hasLocationPermission = () => {
-  locationPermissionCheck();
+  return locationPermissionCheck();
 };
 
 export const isLocationServicesEnabled = () => {
-  locationServicesCheck();
+  return locationServicesCheck();
 };
 
 export const init = () => {
