@@ -15,7 +15,7 @@
     "@okhi/core": "^1.1.0",
     "@okhi/okcollect-manager-react-native": "file:../online",
     "@okhi/okverify-mobile-react-native": "file:../verify",
-    "@okhi/react-native-background-geofencing": "^1.3.2",
+    "@okhi/react-native-background-geofencing": "^1.4.0",
     "@react-native-community/async-storage": "^1.8.1",
     "@react-native-community/masked-view": "^0.1.7",
     "@react-native-firebase/app": "^6.3.4",
