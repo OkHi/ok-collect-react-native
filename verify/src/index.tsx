@@ -2,9 +2,14 @@ import axios from 'axios';
 import RNBackgroundGeofencing, {
   RNGeofenceWebhook,
   RNGeofence,
-  hasLocationPermission as locationPermissionCheck,
+  isLocationPermissionGranted as locationPermissionCheck,
   isLocationServicesEnabled as locationServicesCheck,
   openLocationServicesSettings as servicesSettings,
+  isGooglePlayServicesAvailable as playServicesCheck,
+  requestEnableGooglePlayServices as enablePlayServices,
+  requestEnableLocationServices as enableLocationServices,
+  requestLocationPermission as askLocationPermission,
+  LocationPermissionRational,
 } from '@okhi/react-native-background-geofencing';
 import OkHiCore, {
   OkHiException,
@@ -197,14 +202,6 @@ const getGeofenceConfiguration = async (
   }
 };
 
-export const hasLocationPermission = () => {
-  return locationPermissionCheck();
-};
-
-export const isLocationServicesEnabled = () => {
-  return locationServicesCheck();
-};
-
 export const init = () => {
   RNBackgroundGeofencing.init();
 };
@@ -215,4 +212,30 @@ export const restart = () => {
 
 export const openLocationServicesSettings = () => {
   servicesSettings();
+};
+
+export const isLocationPermissionGranted = () => {
+  return locationPermissionCheck();
+};
+
+export const isLocationServicesEnabled = () => {
+  return locationServicesCheck();
+};
+
+export const isGooglePlayServicesAvailable = () => {
+  return playServicesCheck();
+};
+
+export const requestEnableGooglePlayServices = () => {
+  return enablePlayServices();
+};
+
+export const requestEnableLocationServices = () => {
+  return enableLocationServices();
+};
+
+export const requestLocationPermission = (
+  rational: LocationPermissionRational
+) => {
+  return askLocationPermission(rational);
 };
