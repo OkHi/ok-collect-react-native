@@ -978,10 +978,10 @@
   dependencies:
     axios "^0.19.2"
 
-"@okhi/react-native-background-geofencing@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@okhi/react-native-background-geofencing/-/react-native-background-geofencing-1.4.0.tgz#89cc4dcff49f2d61328784a6568f381af47a57da"
-  integrity sha512-TIZaEQC7FJhHjCvgERz0o9YB1k+dLgIaimkzld5/9aciF/vOjWgaefrUkkwobtU7KiNJ18ksfFnEtnoyr2FaMQ==
+"@okhi/react-native-background-geofencing@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@okhi/react-native-background-geofencing/-/react-native-background-geofencing-1.5.0.tgz#d27a85f0381885f2c801543fc3a8b6996476f0b2"
+  integrity sha512-QGWLEbnJArvSY/76odPwSkCVTIIq503mua9O7+vWd1/d0ux/X6Z27h+KLlc8qVC0/QOVYDyEVGIvdlmlSgXGkQ==
 
 "@rollup/plugin-commonjs@^11.0.0":
   version "11.1.0"
